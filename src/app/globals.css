@@ -1,84 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-/* ============================================
-   MealMover Design System
-   Colors extracted from the provided design system
-   Light mode, Outfit + Inter fonts
-   ============================================ */
+@layer base {
+    :root {
+        /* Background */
+        --color-bg-100: #fefefe;
+        --color-bg-200: #fdfdfd;
+        --color-bg-300: #fbfbfb;
+        --color-bg-400: #f7f7f7;
+        --color-bg-500: #f2f2f2;
 
-@theme {
-    /* ---- Fonts ---- */
-    --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-    --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+        /* Secondary (brand red) */
+        --color-secondary-100: #fee9de;
+        --color-secondary-200: #fdcebe;
+        --color-secondary-300: #faaad0;
+        --color-secondary-400: #f58d63;
+        --color-secondary-500: #ef5b5b;
+        --color-secondary-600: #cd424e;
+        --color-secondary-700: #ac2d43;
+        --color-secondary-800: #8a1d39;
+        --color-secondary-900: #721133;
 
-    /* ---- Background (Anti-Flash White) ---- */
-    --color-background: #f7f7f7; /* 400 */
-    --color-surface: #ffffff; /* white cards */
+        /* Accent (yellow) */
+        --color-accent-100: #fff903;
+        --color-accent-200: #ffff88;
+        --color-accent-300: #ffe870;
+        --color-accent-400: #ffe05d;
+        --color-accent-500: #ffcf27;
+        --color-accent-600: #d8ac1c;
+        --color-accent-700: #b79b13;
+        --color-accent-800: #f936cc;
+        --color-accent-900: #7a5607;
 
-    /* ---- Primary (red — main brand / buttons) ---- */
-    /* Secondary Color "Khmer Curry" is the actual red used in buttons */
-    --color-primary: #cd424e; /* 600 — main red button */
-    --color-primary-hover: #ac2d43; /* 700 */
-    --color-primary-light: #f58d83; /* 400 */
-    --color-primary-50: #fee9de; /* 100 tint */
+        /* Neutral */
+        --color-neutral-100: #f5f5f5;
+        --color-neutral-200: #eeeeee;
+        --color-neutral-300: #e0e0e0;
+        --color-neutral-400: #bdbdbd;
+        --color-neutral-500: #969696;
+        --color-neutral-600: #757575;
+        --color-neutral-700: #616161;
+        --color-neutral-800: #424242;
+        --color-neutral-900: #212121;
+        --color-neutral-1000: #0a0a0a;
 
-    /* ---- Accent (Lemon Punch — yellow) ---- */
-    --color-accent: #ffcf27; /* 500/base */
-    --color-accent-dark: #dbac1c; /* 600 */
+        /* Alerts */
+        --color-success-100: #c1fbd7;
+        --color-success-500: #188f77;
+        --color-success-900: #045b58;
 
-    /* ---- Neutral / Grayscale ---- */
-    --color-foreground: #212121; /* 900 — main text */
-    --color-muted: #757575; /* 600 — secondary text */
-    --color-border: #eeeeee; /* 200 — dividers */
-    --color-input: #f5f5f5; /* 100 — input bg */
+        --color-error-100: #fee4a0;
+        --color-error-300: #fda091;
+        --color-error-500: #f9484e;
+        --color-error-900: #770d36;
 
-    /* ---- Alerts ---- */
-    --color-success: #11a473; /* 600 */
-    --color-error: #d63448; /* 600 */
-    --color-warning: #db9601; /* 600 */
-    --color-info: #016fdb; /* 600 */
+        --color-warning-100: #fff6cc;
+        --color-warning-500: #ff8702;
+        --color-warning-900: #7a4900;
 
-    /* ---- Radius ---- */
-    --radius: 0.75rem;
+        --color-info-100: #ccf3ff;
+        --color-info-500: #028dff;
+        --color-info-900: #00287a;
+
+        /* Semantic shortcuts */
+        --color-brand: #cd424e;
+        --color-brand-hover: #ac2d43;
+        --color-brand-light: #fee9de;
+        --color-bg: #f2f2f2;
+        --color-surface: #ffffff;
+        --color-text: #212121;
+        --color-text-muted: #757575;
+        --color-border: #eeeeee;
+        --color-yellow: #ffcf27;
+    }
+
+    .dark {
+        --color-bg: #0c0c0c;
+        --color-surface: #1d1d1d;
+        --color-text: #f5f5f5;
+        --color-text-muted: #969696;
+        --color-border: #424242;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 }
 
-/* ---- Base ---- */
-* {
-    border-color: var(--color-border);
-}
+@layer utilities {
+    /* Headings */
+    .h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 100px;
+        line-height: 115px;
+        font-weight: 500;
+    }
+    .h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 95px;
+        line-height: 100px;
+        font-weight: 500;
+    }
+    .h3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 76px;
+        line-height: 84px;
+        font-weight: 500;
+    }
+    .h4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 61px;
+        line-height: 72px;
+        font-weight: 500;
+    }
+    .h5 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 49px;
+        line-height: 60px;
+        font-weight: 500;
+    }
+    .h6 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 39px;
+        line-height: 48px;
+        font-weight: 500;
+    }
+    .h7 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 31px;
+        line-height: 36px;
+        font-weight: 500;
+    }
 
-html {
-    scroll-behavior: auto; /* Lenis handles smooth scroll */
-}
+    /* Subheadings semibold */
+    .subheading-1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 39px;
+        font-weight: 600;
+    }
+    .subheading-2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 31px;
+        font-weight: 600;
+    }
+    .subheading-3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 25px;
+        font-weight: 600;
+    }
+    .subheading-4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .subheading-5 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .subheading-6 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+    }
 
-body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    min-height: 100vh;
-}
+    /* Subheadings medium */
+    .subheading-m-1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 39px;
+        font-weight: 500;
+    }
+    .subheading-m-2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 31px;
+        font-weight: 500;
+    }
+    .subheading-m-3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .subheading-m-4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .subheading-m-5 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .subheading-m-6 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+    }
 
-/* ---- helper aliases used in JSX ---- */
-.text-primary {
-    color: var(--color-primary);
-}
-.text-muted {
-    color: var(--color-muted);
-}
-.bg-primary {
-    background-color: var(--color-primary);
-}
-.bg-surface {
-    background-color: var(--color-surface);
-}
-.font-heading {
-    font-family: var(--font-heading);
-}
+    /* Body */
+    .body-1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 24px;
+        font-weight: 300;
+    }
+    .body-2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 20px;
+        font-weight: 300;
+    }
+    .body-3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 18px;
+        font-weight: 300;
+    }
+    .body-4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+    }
+    .body-5 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 14px;
+        font-weight: 300;
+    }
+    .body-6 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 12px;
+        font-weight: 300;
+    }
 
-/* hide scrollbar for horizontal rows (menu categories, restaurant cards) */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    /* Paragraph (Inter) */
+    .paragraph {
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+    }
 }

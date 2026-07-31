@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/layout/providers";
+import { Providers } from "../components/layout/providers";
+import { Navbar } from "../components/layout/Navbar";
+import { Footer } from "../components/layout/Footer";
 
-// Design System: Outfit for headings/UI, Inter for paragraphs
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
@@ -26,7 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${outfit.variable} ${inter.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
