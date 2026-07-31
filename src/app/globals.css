@@ -1,0 +1,84 @@
+@import 'tailwindcss';
+
+/* ============================================
+   MealMover Design System
+   Colors extracted from the provided design system
+   Light mode, Outfit + Inter fonts
+   ============================================ */
+
+@theme {
+    /* ---- Fonts ---- */
+    --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+    /* ---- Background (Anti-Flash White) ---- */
+    --color-background: #f7f7f7; /* 400 */
+    --color-surface: #ffffff; /* white cards */
+
+    /* ---- Primary (red — main brand / buttons) ---- */
+    /* Secondary Color "Khmer Curry" is the actual red used in buttons */
+    --color-primary: #cd424e; /* 600 — main red button */
+    --color-primary-hover: #ac2d43; /* 700 */
+    --color-primary-light: #f58d83; /* 400 */
+    --color-primary-50: #fee9de; /* 100 tint */
+
+    /* ---- Accent (Lemon Punch — yellow) ---- */
+    --color-accent: #ffcf27; /* 500/base */
+    --color-accent-dark: #dbac1c; /* 600 */
+
+    /* ---- Neutral / Grayscale ---- */
+    --color-foreground: #212121; /* 900 — main text */
+    --color-muted: #757575; /* 600 — secondary text */
+    --color-border: #eeeeee; /* 200 — dividers */
+    --color-input: #f5f5f5; /* 100 — input bg */
+
+    /* ---- Alerts ---- */
+    --color-success: #11a473; /* 600 */
+    --color-error: #d63448; /* 600 */
+    --color-warning: #db9601; /* 600 */
+    --color-info: #016fdb; /* 600 */
+
+    /* ---- Radius ---- */
+    --radius: 0.75rem;
+}
+
+/* ---- Base ---- */
+* {
+    border-color: var(--color-border);
+}
+
+html {
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    min-height: 100vh;
+}
+
+/* ---- helper aliases used in JSX ---- */
+.text-primary {
+    color: var(--color-primary);
+}
+.text-muted {
+    color: var(--color-muted);
+}
+.bg-primary {
+    background-color: var(--color-primary);
+}
+.bg-surface {
+    background-color: var(--color-surface);
+}
+.font-heading {
+    font-family: var(--font-heading);
+}
+
+/* hide scrollbar for horizontal rows (menu categories, restaurant cards) */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
