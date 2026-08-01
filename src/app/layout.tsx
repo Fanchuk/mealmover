@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "../components/layout/providers";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { CartPanel } from "@/src/components/cart/CartPanel";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <CartPanel />
         </Providers>
       </body>
     </html>

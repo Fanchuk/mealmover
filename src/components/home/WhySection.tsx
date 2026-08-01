@@ -11,7 +11,7 @@ export function WhySection() {
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
         <div className="relative order-2 lg:order-1">
-          <img src="/Layer_9.svg" alt="Why MealMover" className="w-full max-w-[520px] mx-auto" />
+          <img src="/Layer_9.svg" alt="Why MealMover" className="w-full max-w-[500px] mx-auto" />
         </div>
 
         <div className="flex flex-col gap-6 lg:gap-8 order-1 lg:order-2">
@@ -22,9 +22,9 @@ export function WhySection() {
             Why We Are the Best
           </h2>
           <p className="font-heading font-normal text-[16px] sm:text-[20px] leading-[150%] tracking-[0.02em] text-neutral-700">
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
+            &ldquo;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
             sollicitudin convallis enim sed vehicula. Ut scelerisque gravida elit,
-            at porttitor nulla. Vestibulum tellus mi, posuere vel turpis consequat."
+            at porttitor nulla. Vestibulum tellus mi, posuere vel turpis consequat.&rdquo;
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

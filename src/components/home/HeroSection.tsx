@@ -49,14 +49,19 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center order-1 lg:order-2 min-h-[400px] lg:min-h-[600px]">
-          <img src="/Group 22.svg" alt="" className="absolute w-[300px] sm:w-[420px] lg:w-[480px] max-w-none" />
-          <div className="relative z-10 w-[240px] sm:w-[280px]">
+        <div className="relative flex items-center justify-center order-1 lg:order-2 min-h-[420px] sm:min-h-[520px] lg:min-h-[652px]">
+          <div className="absolute w-[85%] max-w-[540px] aspect-square rounded-full border border-dashed border-[#FFCF27]/70" />
+          <div className="absolute w-[62%] max-w-[400px] aspect-square rounded-full bg-[#FFCF27]" />
+          <img src="/015-spinach.png" alt="" className="absolute left-[2%] top-[28%] w-[90px] sm:w-[130px] lg:w-[150px] -rotate-12 z-20" />
+          <div className="relative z-10 w-[52%] max-w-[300px]">
             <img src="/Group 1000002219.png" alt="MealMover App" className="w-full drop-shadow-2xl" />
           </div>
-          <div className="absolute top-12 right-8 w-3 h-3 rounded-sm bg-[#FFCF27] rotate-45" />
-          <div className="absolute top-1/3 right-2 w-2 h-2 rounded-sm bg-[#EF5B5B] rotate-45" />
-          <div className="absolute top-8 left-12 w-2 h-2 rounded-sm bg-[#FFCF27] rotate-45" />
+          <img src="/Rectangle 670 (2).jpg" alt="" className="absolute z-20 left-[8%] bottom-[6%] w-[70px] sm:w-[95px] lg:w-[110px] aspect-square object-cover rounded-full shadow-lg" />
+          <img src="/Rectangle 670.jpg" alt="" className="absolute z-20 left-1/2 -translate-x-1/2 bottom-[-2%] w-[75px] sm:w-[100px] lg:w-[120px] aspect-square object-cover rounded-full shadow-lg" />
+          <img src="/bbq-dinner-with-top-sirloin-steak-2023-11-27-05-01-04-utc 2.jpg" alt="" className="absolute z-20 right-[6%] bottom-[8%] w-[70px] sm:w-[95px] lg:w-[110px] aspect-square object-cover rounded-full shadow-lg" />
+          <div className="absolute top-[6%] left-[12%] w-2.5 h-2.5 rounded-sm bg-[#FFCF27] rotate-45" />
+          <div className="absolute top-[42%] right-[2%] w-3 h-3 rounded-sm bg-[#EF5B5B] rotate-45" />
+          <div className="absolute bottom-[30%] left-[40%] w-3 h-3 rounded-sm bg-[#FFCF27] rotate-45" />
         </div>
 
       </div>

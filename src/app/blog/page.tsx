@@ -1,7 +1,11 @@
-export default function RestaurantsPage() {
+import { BlogHero } from "@/src/components/blog/BlogHero";
+import { BlogContent } from "@/src/components/blog/BlogContent";
+
+export default function BlogPage() {
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="font-heading text-2xl font-bold">Restaurants</h1>
-    </main>
+    <>
+      <BlogHero />
+      <BlogContent />
+    </>
   );
 }

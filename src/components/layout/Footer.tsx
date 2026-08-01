@@ -12,9 +12,7 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-10 lg:gap-12">
 
           <div className="flex flex-col gap-8 lg:gap-10">
-            <div className="flex items-center gap-3">
-              <img src="/Frame 1000002737.svg" alt="MealMover" className="h-12 w-auto" />
-            </div>
+            <img src="/Frame 1000002737.svg" alt="MealMover" className="h-12 w-auto self-start" />
             <p className="font-heading font-normal text-[16px] leading-[150%] text-neutral-700 max-w-[260px]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin convallis enim sed vehicula.
             </p>
@@ -53,15 +51,11 @@ export function Footer() {
             <div className="flex items-start justify-between mb-2">
               <div>
                 <h4 className="font-heading font-bold text-[20px] lg:text-[25px] leading-[140%] tracking-[0.02em] text-neutral-800">Get in Touch</h4>
-                <p className="font-heading font-light text-[16px] leading-[150%] text-neutral-700 mt-1">Question or feedback?<br />We'd love to hear from you</p>
+                <p className="font-heading font-light text-[16px] leading-[150%] text-neutral-700 mt-1">Question or feedback?<br />We&apos;d love to hear from you</p>
               </div>
               <div className="flex gap-2">
-                <div className="w-9 h-9 rounded-full border border-neutral-200 flex items-center justify-center overflow-hidden">
-                  <img src="/Frame 1000002736.png" alt="Play Store" className="w-5 h-5 object-contain" />
-                </div>
-                <div className="w-9 h-9 rounded-full border border-neutral-200 flex items-center justify-center overflow-hidden">
-                  <img src="/Frame 1000002735.png" alt="App Store" className="w-5 h-5 object-contain" />
-                </div>
+                <img src="/Frame 1000002736.png" alt="Play Store" className="w-9 h-9 object-contain" />
+                <img src="/Frame 1000002735.png" alt="App Store" className="w-9 h-9 object-contain" />
               </div>
             </div>
 

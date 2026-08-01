@@ -1,7 +1,5 @@
-export default function RestaurantsPage() {
-  return (
-    <main className="min-h-screen p-8">
-      <h1 className="font-heading text-2xl font-bold">Restaurants</h1>
-    </main>
-  );
+import { CheckoutContent } from "@/src/components/checkout/CheckoutContent";
+
+export default function CheckoutPage() {
+  return <CheckoutContent />;
 }

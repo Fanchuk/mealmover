@@ -13,9 +13,9 @@ const CATEGORIES = [
 ];
 
 const MEALS = [
-  { id: 1, name: "Veg Big Burger",        price: 10.02, time: "10 min", distance: "1.4 km", resto: "Quickbite Resto", rating: 4.9, reviews: "1K+", image: "/two-female-friends-relaxing-in-outdoor-cafe-2023-11-27-05-00-06-utc 1.png" },
-  { id: 2, name: "Creamy Potato Chicken", price: 10.02, time: "10 min", distance: "1.4 km", resto: "Quickbite Resto", rating: 4.9, reviews: "1K+", image: "/two-female-friends-relaxing-in-outdoor-cafe-2023-11-27-05-00-06-utc 1 (1).png" },
-  { id: 3, name: "Creamy Chicken Bowl",   price: 12.50, time: "15 min", distance: "2.1 km", resto: "Oriental Resto",  rating: 4.8, reviews: "500+", image: "/two-female-friends-relaxing-in-outdoor-cafe-2023-11-27-05-00-06-utc 1.png" },
+  { id: 1, name: "Veg Big Burger",        price: 10.02, time: "10 min", distance: "1.4 km", resto: "Quickbite Resto", rating: 4.9, reviews: "1K+", image: "/Rectangle 670 (5).jpg" },
+  { id: 2, name: "Creamy Potato Chicken", price: 10.02, time: "10 min", distance: "1.4 km", resto: "Quickbite Resto", rating: 4.9, reviews: "1K+", image: "/Rectangle 670 (4).jpg" },
+  { id: 3, name: "Creamy Chicken Bowl",   price: 12.50, time: "15 min", distance: "2.1 km", resto: "Oriental Resto",  rating: 4.8, reviews: "500+", image: "/Rectangle 670 (3).jpg" },
 ];
 
 export function FoodCategoriesSection() {
@@ -45,7 +45,6 @@ export function FoodCategoriesSection() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Categories */}
           <div className="flex lg:flex-col gap-3 lg:w-[280px] flex-shrink-0 relative overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
             <div className="hidden lg:flex absolute left-[-20px] top-0 bottom-0 w-[4px] flex-col">
               <div className="h-[137px] bg-[#FFCF27] rounded-full" />
@@ -57,10 +56,10 @@ export function FoodCategoriesSection() {
                 key={cat.id}
                 onClick={() => setActive(cat.id)}
                 className={cn(
-                  "flex items-center gap-3 lg:gap-4 rounded-[50px] h-[60px] lg:h-[78px] px-4 lg:px-5 transition-all duration-200 font-heading font-medium text-[16px] lg:text-[20px] flex-shrink-0 whitespace-nowrap",
+                  "flex items-center gap-3 lg:gap-4 rounded-[50px] h-[60px] lg:h-[78px] px-4 lg:px-5 transition-all duration-200 font-heading font-medium text-[16px] lg:text-[20px] flex-shrink-0 whitespace-nowrap shadow-[0_8px_20px_0_rgba(0,0,0,0.04)]",
                   active === cat.id
                     ? "bg-[#EF5B5B] text-white"
-                    : "bg-white border border-neutral-200 text-neutral-700 hover:border-[#EF5B5B]"
+                    : "bg-white border border-neutral-200 text-neutral-800 hover:border-[#EF5B5B]"
                 )}
               >
                 <span className={cn(
@@ -74,44 +73,41 @@ export function FoodCategoriesSection() {
             ))}
           </div>
 
-          {/* Meals */}
-          <div className="flex gap-4 lg:gap-5 overflow-x-auto flex-1 pb-2">
+          <div className="flex gap-4 lg:gap-6 overflow-x-auto flex-1 pb-2">
             {MEALS.map((meal) => (
-              <div key={meal.id} className="bg-white rounded-2xl shadow-[0_16px_40px_0_rgba(0,0,0,0.07)] flex-shrink-0 w-[280px] sm:w-[340px] overflow-hidden">
-                <div className="relative h-[200px] sm:h-[220px]">
+              <div key={meal.id} className="bg-white rounded-[20px] shadow-[0_16px_40px_0_rgba(0,0,0,0.07)] flex-shrink-0 w-[300px] sm:w-[360px] overflow-hidden">
+                <div className="relative h-[280px] sm:h-[320px]">
                   <img src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
-                  <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-[#EF5B5B] transition-colors">
-                    <Heart size={14} className="fill-current" />
+                  <button className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#EF5B5B] shadow-md transition-colors">
+                    <Heart size={16} className="fill-current" />
                   </button>
                 </div>
 
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-heading font-medium text-[18px] sm:text-[20px] leading-[150%] tracking-[0.02em] text-neutral-800">
-                      {meal.name}
-                    </h3>
-                  </div>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="font-heading font-bold text-[18px] sm:text-[20px] text-[#EF5B5B]">
+                <div className="p-5">
+                  <h3 className="font-heading font-medium text-[20px] sm:text-[25px] leading-[140%] tracking-[0.02em] text-neutral-800 mb-3">
+                    {meal.name}
+                  </h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="font-heading font-bold text-[24px] sm:text-[28px] text-[#EF5B5B]">
                       ${meal.price.toFixed(2)}
                     </p>
-                    <div className="flex items-center gap-1">
-                      <Clock size={12} className="text-[#EF5B5B]" />
-                      <span className="font-heading font-light text-[13px] sm:text-[14px] text-neutral-600 whitespace-nowrap">
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={14} className="text-[#EF5B5B]" />
+                      <span className="font-heading font-light text-[14px] text-neutral-600 whitespace-nowrap">
                         {meal.time} · {meal.distance}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
-                    <div className="flex items-center gap-1">
-                      <Home size={12} className="text-[#EF5B5B]" />
-                      <span className="font-heading font-light text-[13px] sm:text-[14px] text-neutral-600">{meal.resto}</span>
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-100">
+                    <div className="flex items-center gap-1.5">
+                      <Home size={14} className="text-[#EF5B5B]" />
+                      <span className="font-heading font-light text-[14px] text-neutral-600">{meal.resto}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Star size={12} className="text-[#FFCF27] fill-[#FFCF27]" />
-                      <span className="font-heading font-medium text-[13px] sm:text-[14px] text-[#EF5B5B]">{meal.rating}</span>
-                      <span className="font-heading font-light text-[13px] sm:text-[14px] text-neutral-600">/ 5.0</span>
-                      <span className="font-heading font-light text-[13px] sm:text-[14px] text-neutral-400">({meal.reviews})</span>
+                      <Star size={14} className="text-[#FFCF27] fill-[#FFCF27]" />
+                      <span className="font-heading font-medium text-[14px] text-[#EF5B5B]">{meal.rating}</span>
+                      <span className="font-heading font-light text-[14px] text-neutral-600">/ 5.0</span>
+                      <span className="font-heading font-light text-[14px] text-neutral-400">({meal.reviews})</span>
                     </div>
                   </div>
                 </div>

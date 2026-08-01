@@ -3,9 +3,11 @@ import { ArrowRight, Play } from "lucide-react";
 
 export function PromoSection() {
   return (
-    <section className="py-8 lg:py-10">
+    <section className="py-8 lg:py-12 overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-        <div className="relative w-full rounded-[32px] lg:rounded-[60px] bg-[#FFCE41] overflow-hidden flex flex-col lg:flex-row items-center min-h-[400px] lg:h-[454px]">
+        <div className="relative w-full rounded-[32px] lg:rounded-[40px] bg-[#FFCE41] overflow-hidden flex flex-col lg:flex-row items-center min-h-[420px] lg:h-[454px]">
+
+          <div className="absolute left-[45%] top-0 bottom-0 right-0 bg-[#F5C023]/60 hidden lg:block" style={{ clipPath: "ellipse(70% 120% at 90% 50%)" }} />
 
           <div className="relative z-10 px-6 lg:pl-16 py-8 lg:py-0 flex flex-col gap-4 max-w-full lg:max-w-[480px]">
             <h2 className="font-heading font-bold text-[42px] sm:text-[52px] lg:text-[61px] leading-[115%] tracking-[0.01em] text-[#EF5B5B]">
@@ -33,8 +35,8 @@ export function PromoSection() {
             </div>
           </div>
 
-          <div className="lg:absolute lg:right-16 lg:bottom-0 h-[240px] lg:h-[420px] flex items-end">
-            <img src="/Burrito.svg" alt="Taco" className="h-full object-contain drop-shadow-2xl" />
+          <div className="relative z-10 lg:absolute lg:right-16 lg:top-1/2 lg:-translate-y-1/2 w-[280px] sm:w-[380px] lg:w-[469px] flex items-center justify-center">
+            <img src="/Burrito.svg" alt="Taco" className="w-full object-contain drop-shadow-2xl" />
           </div>
         </div>
       </div>

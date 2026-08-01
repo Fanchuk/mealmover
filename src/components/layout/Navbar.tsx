@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
+import { useCartStore } from "@/src/stores/cart-store";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -18,11 +19,11 @@ const NAV_LINKS = [
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { setOpen: setCartOpen } = useCartStore();
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_2px_16px_0_rgba(0,0,0,0.06)]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-[72px] flex items-center gap-4 lg:gap-8">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
           <img src="/Logo.svg" alt="MealMover" className="h-8 w-auto" />
           <span className="hidden sm:inline font-heading font-semibold text-[20px] text-neutral-900 leading-none">
@@ -30,7 +31,6 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-6 flex-1">
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href;
@@ -50,11 +50,13 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right side */}
         <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0 ml-auto lg:ml-0">
-          <Link href="/cart" className="text-neutral-500 hover:text-[#EF5B5B] transition-colors">
-            <ShoppingCart size={22} />
-          </Link>
+          <button
+            onClick={() => setCartOpen(true)}
+            className="text-neutral-500 hover:text-[#EF5B5B] transition-colors"
+          >
+            <img src="/shopping-cart.svg" alt="Cart" className="w-6 h-6" />
+          </button>
 
           <Link
             href="/restaurants"
@@ -67,14 +69,12 @@ export function Navbar() {
             <img src="/Frame 6.svg" alt="User" className="w-full h-full object-cover" />
           </div>
 
-          {/* Burger */}
           <button className="lg:hidden text-neutral-700" onClick={() => setOpen(!open)}>
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
         <nav className="lg:hidden border-t border-neutral-200 bg-white px-4 py-4 flex flex-col gap-2">
           {NAV_LINKS.map((link) => {

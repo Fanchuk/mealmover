@@ -1,7 +1,13 @@
-export default function RestaurantsPage() {
+import { ContactHero } from "@/src/components/contact/ContactHero";
+import { ContactForm } from "@/src/components/contact/ContactForm";
+import { ContactMap } from "@/src/components/contact/ContactMap";
+
+export default function ContactPage() {
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="font-heading text-2xl font-bold">Restaurants</h1>
-    </main>
+    <>
+      <ContactHero />
+      <ContactForm />
+      <ContactMap />
+    </>
   );
 }

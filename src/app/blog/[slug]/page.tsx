@@ -1,12 +1,13 @@
-import Link from "next/link";
+import { BlogDetailContent } from "@/src/components/blog/BlogDetailContent";
+import { BlogDetailSidebar } from "@/src/components/blog/BlogDetailSidebar";
 
-export default function NotFound() {
+export default function BlogDetailPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="font-heading text-6xl font-bold text-primary">404</h1>
-      <Link href="/" className="text-muted hover:text-foreground">
-        Back to homepage
-      </Link>
-    </main>
+    <section className="bg-white py-8 lg:py-14">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <BlogDetailContent />
+        <BlogDetailSidebar />
+      </div>
+    </section>
   );
 }

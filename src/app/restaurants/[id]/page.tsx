@@ -1,12 +1,15 @@
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+import { RestaurantDetailHero } from "@/src/components/restaurants/RestaurantDetailHero";
+import { TodaysOffer } from "@/src/components/restaurants/TodaysOffer";
+import { MenuSection } from "@/src/components/restaurants/MenuSection";
+import { CustomerReviews } from "@/src/components/restaurants/CustomerReviews";
+
+export default function RestaurantDetailPage() {
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="font-heading text-2xl font-bold">Restaurant {id}</h1>
-    </main>
+    <>
+      <RestaurantDetailHero />
+      <TodaysOffer />
+      <MenuSection />
+      <CustomerReviews />
+    </>
   );
 }
