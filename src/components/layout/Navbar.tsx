@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { useCartStore } from "@/src/stores/cart-store";
+import { useCartStore } from "@/src/features/cart/store";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },

@@ -1,13 +1,546 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// ============================================================
+// MealMover — Prisma schema
+// DB: PostgreSQL (Neon / Supabase free tier)
+// ============================================================
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../node_modules/.prisma/client"
+  engineType = "library"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AddressLabel {
+  HOME
+  OFFICE
+  OTHER
+}
+
+enum MenuSection {
+  TODAYS_OFFER
+  MAIN_COURSE
+  DRINKS_DESSERTS
+}
+
+enum OrderStatus {
+  DRAFT
+  PENDING
+  CONFIRMED
+  PREPARING
+  ON_THE_WAY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  CASH
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PromoType {
+  PERCENT
+  FIXED
+}
+
+enum ReviewAspect {
+  PRICE
+  TASTE
+  HYGIENE
+  PACKAGING
+}
+
+enum FaqTab {
+  GENERAL
+  TRANSACTION
+  PAYMENTS
+  RETURNS
+  CAREERS
+}
+
+// ============================================================
+// AUTH (NextAuth v5 + @auth/prisma-adapter)
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  phone         String?
+  role          Role      @default(USER)
+  memberSince   Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+  favorites    Favorite[]
+  cart         Cart?
+  blogComments BlogComment[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================================
+// ГЕОГРАФІЯ / АДРЕСИ
+// ============================================================
+
+model City {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  restaurants Restaurant[]
+}
+
+model Address {
+  id        String       @id @default(cuid())
+  userId    String
+  label     AddressLabel @default(HOME)
+  title     String
+  street    String
+  city      String
+  note      String?
+  lat       Float?
+  lng       Float?
+  isDefault Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@index([userId])
+}
+
+// ============================================================
+// РЕСТОРАНИ ТА МЕНЮ
+// ============================================================
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  restaurants Restaurant[]
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  icon  String
+  order Int    @default(0)
+
+  menuItems MenuItem[]
+}
+
+model Restaurant {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String  @db.Text
+  image       String
+  coverImage  String?
+  street      String
+  cityId      String
+  lat         Float
+  lng         Float
+  phone       String?
+
+  rating         Float   @default(4.9)
+  reviewCount    Int     @default(0)
+  distanceKm     Float   @default(2.5)
+  deliveryMinMin Int     @default(20)
+  deliveryMaxMin Int     @default(30)
+  priceLevel     Int     @default(2)
+  priceRange     String  @default("20K - 100K")
+  isOpen         Boolean @default(true)
+  openingHours   String  @default("08.00 - 23.00")
+
+  isFeatured           Boolean @default(false)
+  isRestaurantOfChoice Boolean @default(false)
+  promoTitle           String?
+  promoSubtitle        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  city      City       @relation(fields: [cityId], references: [id])
+  tags      Tag[]
+  menuItems MenuItem[]
+  reviews   Review[]
+  orders    Order[]
+  favorites Favorite[]
+  carts     Cart[]
+
+  @@index([cityId])
+  @@index([slug])
+}
+
+model MenuItem {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String
+  description   String
+  image         String
+  price         Float
+  oldPrice      Float?
+  discountLabel String?
+  section       MenuSection @default(TODAYS_OFFER)
+  rating        Float       @default(4.9)
+  prepTimeMin   Int         @default(10)
+  calories      Int?
+  isAvailable   Boolean     @default(true)
+  isPopular     Boolean     @default(false)
+  externalId    String?
+
+  restaurantId String
+  categoryId   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  category   Category    @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  favorites  Favorite[]
+
+  @@unique([restaurantId, slug])
+  @@index([restaurantId])
+  @@index([categoryId])
+  @@index([section])
+}
+
+model Favorite {
+  id           String   @id @default(cuid())
+  userId       String
+  menuItemId   String?
+  restaurantId String?
+  createdAt    DateTime @default(now())
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  menuItem   MenuItem?   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  restaurant Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, menuItemId])
+  @@unique([userId, restaurantId])
+  @@index([userId])
+}
+
+// ============================================================
+// КОШИК
+// ============================================================
+
+model Cart {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  restaurantId String?
+  updatedAt    DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant? @relation(fields: [restaurantId], references: [id])
+  items      CartItem[]
+}
+
+model CartItem {
+  id         String  @id @default(cuid())
+  cartId     String
+  menuItemId String
+  quantity   Int     @default(1)
+  isSelected Boolean @default(true)
+  note       String?
+
+  cart     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, menuItemId])
+  @@index([cartId])
+}
+
+// ============================================================
+// ПРОМОКОДИ ТА ЗАМОВЛЕННЯ
+// ============================================================
+
+model PromoCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  description String
+  type        PromoType @default(FIXED)
+  value       Float
+  minOrder    Float     @default(0)
+  maxDiscount Float?
+  usageLimit  Int?
+  usedCount   Int       @default(0)
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  orders Order[]
+}
+
+model Driver {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  avatar    String
+  phone     String?
+  rating    Float    @default(5)
+  createdAt DateTime @default(now())
+
+  orders Order[]
+}
+
+model Order {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+
+  userId       String
+  restaurantId String
+  addressId    String?
+  driverId     String?
+  promoCodeId  String?
+
+  status        OrderStatus   @default(PENDING)
+  paymentMethod PaymentMethod @default(CREDIT_CARD)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  subtotal     Float
+  shippingCost Float @default(2.12)
+  discount     Float @default(0)
+  total        Float
+
+  note            String?
+  stripeSessionId String?   @unique
+  driverRating    Int?
+  distanceKm      Float     @default(2.9)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deliveredAt     DateTime?
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id])
+  address    Address?    @relation(fields: [addressId], references: [id])
+  driver     Driver?     @relation(fields: [driverId], references: [id])
+  promoCode  PromoCode?  @relation(fields: [promoCodeId], references: [id])
+  items      OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String
+  menuItemId String?
+
+  name     String
+  image    String
+  price    Float
+  quantity Int
+
+  order    Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem MenuItem? @relation(fields: [menuItemId], references: [id])
+
+  @@index([orderId])
+}
+
+// ============================================================
+// ВІДГУКИ
+// ============================================================
+
+model Review {
+  id           String        @id @default(cuid())
+  userId       String
+  restaurantId String
+  rating       Float
+  comment      String        @db.Text
+  aspect       ReviewAspect?
+  orderedItems String[]
+  purchasedAt  DateTime
+  isVisible    Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId])
+  @@index([aspect])
+}
+
+// ============================================================
+// БЛОГ (пости з API, коментарі — свої)
+// ============================================================
+
+model BlogComment {
+  id             String   @id @default(cuid())
+  externalPostId String
+  userId         String?
+  authorName     String
+  authorEmail    String
+  content        String   @db.Text
+  rating         Int      @default(5)
+  isApproved     Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([externalPostId])
+}
+
+// ============================================================
+// КОНТЕНТ САЙТУ
+// ============================================================
+
+model Feature {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  icon        String
+  order       Int    @default(0)
+}
+
+model HowItWorksStep {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  image       String
+  order       Int    @default(0)
+}
+
+model TeamMember {
+  id        String  @id @default(cuid())
+  name      String
+  role      String
+  bio       String
+  avatar    String
+  facebook  String?
+  instagram String?
+  order     Int     @default(0)
+}
+
+model Partner {
+  id    String @id @default(cuid())
+  name  String @unique
+  logo  String
+  order Int    @default(0)
+}
+
+model Testimonial {
+  id     String @id @default(cuid())
+  name   String
+  role   String
+  avatar String
+  text   String @db.Text
+  rating Float  @default(4.9)
+  order  Int    @default(0)
+}
+
+model Faq {
+  id       String  @id @default(cuid())
+  question String
+  answer   String  @db.Text
+  tab      FaqTab  @default(GENERAL)
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  @@index([tab])
+}
+
+model Stat {
+  id    String @id @default(cuid())
+  value String
+  label String
+  order Int    @default(0)
+}
+
+// ============================================================
+// ФОРМИ
+// ============================================================
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  isConfirmed  Boolean  @default(false)
+  unsubscribed Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead])
 }

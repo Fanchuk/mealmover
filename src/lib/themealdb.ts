@@ -1,34 +1,83 @@
-// TheMealDB — free meals API (no key required)
-const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
+import { 
+    MealsResponseSchema,
+    MealCategoriesResponseSchema,
+    type Meal,
+    type OfferCardData,
+ } from "./types/meals";
 
-export type Meal = {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
-  strCategory?: string;
-  strArea?: string;
-};
+const BASE = "https://www.themealdb.com/api/json/v1/1";
+
 
 export async function getMealsByCategory(category: string): Promise<Meal[]> {
-  const res = await fetch(`${BASE_URL}/filter.php?c=${category}`, {
-    next: { revalidate: 60 * 60 * 24 }, // cache 24h
+  const res = await fetch(`${BASE}/filter.php?c=${encodeURIComponent(category)}`, {
+    next: { revalidate: 3600 },
   });
-  if (!res.ok) throw new Error(`TheMealDB error: ${res.status}`);
-  const data = await res.json();
-  return data.meals ?? [];
+  const json = await res.json();
+  const parsed = MealsResponseSchema.safeParse(json);
+  return parsed.success ? (parsed.data.meals ?? []) : [];
 }
 
-export async function getMealById(id: string): Promise<Meal | null> {
-  const res = await fetch(`${BASE_URL}/lookup.php?i=${id}`, {
-    next: { revalidate: 60 * 60 * 24 },
+export async function searchMeals(query: string): Promise<Meal[]> {
+  const res = await fetch(`${BASE}/search.php?s=${encodeURIComponent(query)}`, {
+    next: { revalidate: 3600 },
   });
-  if (!res.ok) throw new Error(`TheMealDB error: ${res.status}`);
-  const data = await res.json();
-  return data.meals?.[0] ?? null;
+  const json = await res.json();
+  const parsed = MealsResponseSchema.safeParse(json);
+  return parsed.success ? (parsed.data.meals ?? []) : [];
 }
 
-// helper: assign a pseudo-price to a meal (TheMealDB has no prices)
-export const mealPrice = (id: string) => {
-  const n = parseInt(id.slice(-3), 10) % 20;
-  return (n + 5 + 0.02).toFixed(2);
+export async function getMealCategories() {
+  const res = await fetch(`${BASE}/categories.php`, {
+    next: { revalidate: 86400 },
+  });
+  const json = await res.json();
+  const parsed = MealCategoriesResponseSchema.safeParse(json);
+  return parsed.success ? parsed.data.categories : [];
+}
+
+
+const PRICE_BY_CATEGORY: Record<string, number> = {
+  Seafood: 14.5,
+  Chicken: 11.0,
+  Beef: 13.5,
+  Vegetarian: 9.5,
+  Dessert: 8.0,
+  Pasta: 10.5,
+  Lamb: 15.0,
+  Pork: 12.0,
+  Breakfast: 8.5,
+  Miscellaneous: 10.02,
 };
+
+function calcPrices(category: string | null, index: number) {
+  const base = PRICE_BY_CATEGORY[category ?? ""] ?? 10.02;
+  const price = Math.round((base + index * 0.3) * 100) / 100;
+  const oldPrice = Math.round(price * 3.2 * 100) / 100;
+  return { price, oldPrice };
+}
+
+export function mealToOfferCard(meal: Meal, index = 0): OfferCardData {
+  const { price, oldPrice } = calcPrices(meal.strCategory, index);
+  return {
+    id: meal.idMeal,
+    name: meal.strMeal,
+    desc: meal.strArea ? `${meal.strArea} cuisine` : "Delicious meal",
+    image: meal.strMealThumb ?? `https://picsum.photos/seed/${meal.idMeal}/800/600`,
+    price,
+    oldPrice,
+  };
+}
+
+export function mealToMenuItemCard(meal: Meal, index = 0): MenuItemCardData {
+  const { price, oldPrice } = calcPrices(meal.strCategory, index);
+  const discount = `Discount $${(oldPrice - price).toFixed(2)}`;
+  return {
+    id: meal.idMeal,
+    name: meal.strMeal,
+    desc: meal.strArea ? `${meal.strArea} cuisine` : "Delicious meal",
+    image: meal.strMealThumb ?? `https://picsum.photos/seed/${meal.idMeal}/800/600`,
+    price,
+    oldPrice,
+    discount,
+  };
+}

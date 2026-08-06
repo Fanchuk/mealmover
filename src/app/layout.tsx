@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "../components/layout/providers";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
-import { CartPanel } from "@/src/components/cart/CartPanel";
+import { CartPanel } from "@/src/features/cart/components/CartPanel";
 
 const outfit = Outfit({
   subsets: ["latin"],
