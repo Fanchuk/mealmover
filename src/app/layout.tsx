@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { Providers } from "../components/layout/providers";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { CartPanel } from "@/src/features/cart/components/CartPanel";
+import { FlyToCartProvider } from "@/src/features/restaurants/components/FlyToCartProvider";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -29,10 +31,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${outfit.variable} ${inter.variable} font-sans antialiased`}>
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
-          <CartPanel />
+          <FlyToCartProvider>
+            <Navbar />
+            {children}
+            <Footer />
+            <CartPanel />
+            <Toaster position="top-center" />
+          </FlyToCartProvider>
         </Providers>
       </body>
     </html>

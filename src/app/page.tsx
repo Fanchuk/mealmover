@@ -74,44 +74,46 @@ export default async function HomePage() {
   const popularItems = [...mealsByCategory.flat(), ...drinkMeals];
 
   return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "MealMover",
-            url: "https://mealmover.com",
-            logo: "https://mealmover.com/logo.png",
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "MealMover",
-            url: "https://mealmover.com",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: "https://mealmover.com/restaurants?q={search_term_string}",
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
-      />
+    <main className="relative overflow-hidden">
+      <div className="relative z-10">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "MealMover",
+              url: "https://mealmover.com",
+              logo: "https://mealmover.com/logo.png",
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "MealMover",
+              url: "https://mealmover.com",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://mealmover.com/restaurants?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
 
-      <HeroSection />
-      <ScrollReveal><WhySection features={features} /></ScrollReveal>
-      <ScrollReveal><FoodCategoriesSection categories={top5} popularItems={popularItems} /></ScrollReveal>
-      <ScrollReveal><PromoSection /></ScrollReveal>
-      <ScrollReveal><PartnerSection /></ScrollReveal>
-      <ScrollReveal><TestimonialsSection testimonials={testimonials} /></ScrollReveal>
-      <ScrollReveal><FaqSection faqs={FAQS} /></ScrollReveal>
-      <ScrollReveal><CitiesSection cities={cities} /></ScrollReveal>
+        <HeroSection />
+        <ScrollReveal><WhySection features={features} /></ScrollReveal>
+        <ScrollReveal><FoodCategoriesSection categories={top5} popularItems={popularItems} /></ScrollReveal>
+        <ScrollReveal><PromoSection /></ScrollReveal>
+        <ScrollReveal><PartnerSection /></ScrollReveal>
+        <ScrollReveal><TestimonialsSection testimonials={testimonials} /></ScrollReveal>
+        <ScrollReveal><FaqSection faqs={FAQS} /></ScrollReveal>
+        <ScrollReveal><CitiesSection cities={cities} /></ScrollReveal>
+      </div>
     </main>
   );
 }

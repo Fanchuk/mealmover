@@ -47,6 +47,14 @@ const CITIES = [
   "Manado", "Lampung", "Semarang", "Makassar",
 ];
 
+const DELIVERY_LOCATIONS = [
+  { title: "Sunset Road",   street: "Sunset Road, 18 Bali",        city: "Bali",     lat: -8.6905, lng: 115.1729, isDefault: true,  order: 1 },
+  { title: "Sentani Road",  street: "Sentani Road, 10 Malang",     city: "Malang",   lat: -7.9666, lng: 112.6326, isDefault: false, order: 2 },
+  { title: "Garden Bay St", street: "Garden Bay St, 14 Sidoarjo",  city: "Sidoarjo", lat: -7.4478, lng: 112.7183, isDefault: false, order: 3 },
+  { title: "Riverfront",    street: "Riverfront Street, 22 Surabaya", city: "Surabaya", lat: -7.2575, lng: 112.7521, isDefault: false, order: 4 },
+  { title: "Merdeka St",    street: "Merdeka Street, 3 Jakarta",   city: "Jakarta",  lat: -6.1754, lng: 106.8272, isDefault: false, order: 5 },
+];
+
 // ── 2. CATEGORIES (first 5 are shown on the homepage) ───────────
 const CATEGORIES = [
   { name: "Fast Food",  slug: "fast-food",  icon: "/Hamburger.svg",         order: 1 },
@@ -346,6 +354,7 @@ async function main() {
   await prisma.category.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.city.deleteMany();
+  await prisma.deliveryLocation.deleteMany();
   await prisma.address.deleteMany();
   await prisma.session.deleteMany();
   await prisma.account.deleteMany();
@@ -372,6 +381,10 @@ async function main() {
     )
   );
   const cityByName = new Map(cities.map((c) => [c.name, c.id]));
+
+  // 1b. Delivery locations (for the Sunset Road selector)
+  console.log("📍 Delivery locations...");
+  await prisma.deliveryLocation.createMany({ data: DELIVERY_LOCATIONS });
 
   // 2. Categories
   console.log("🍔 Categories...");

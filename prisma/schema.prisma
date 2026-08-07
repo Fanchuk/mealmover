@@ -179,6 +179,17 @@ model Address {
   @@index([userId])
 }
 
+model DeliveryLocation {
+  id        String   @id @default(cuid())
+  title     String
+  street    String
+  city      String
+  lat       Float
+  lng       Float
+  isDefault Boolean  @default(false)
+  order     Int      @default(0)
+}
+
 // ============================================================
 // РЕСТОРАНИ ТА МЕНЮ
 // ============================================================

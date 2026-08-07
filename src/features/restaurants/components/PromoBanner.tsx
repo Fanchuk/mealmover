@@ -16,7 +16,7 @@ export function PromoBanner({ restaurant }: { restaurant: Restaurant | null }) {
   const subtitle = restaurant?.promoSubtitle ?? "Pay for One";
 
   return (
-    <section className="py-6 lg:py-8">
+    <section className="py-6 lg:py-8 bg-white">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
         <div className="relative w-full rounded-[24px] lg:rounded-[40px] bg-[#1AA163] overflow-hidden flex flex-col md:flex-row items-center justify-end min-h-[300px] md:min-h-[340px]">
           <div className="absolute left-0 top-0 bottom-0 w-[55%] md:w-[48%] h-full z-10 hidden md:block">

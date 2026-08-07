@@ -1,141 +1,194 @@
 "use client";
 
-import { useCartStore } from "@/src/features/cart/store";
-import { X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
-
-const ITEMS = [
-  { id: 1, name: "Tarik Noodle",  price: 10.02, perItem: 10.02, qty: 1, total: 10.02, image: "/Mask group (8).png" },
-  { id: 2, name: "Tom Yum Koong", price: 11.04, perItem: 11.04, qty: 2, total: 10.02, image: "/Mask group (9).png" },
-];
+import { X, ShoppingCart, Check } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useLenis } from "lenis/react";
+import { useCartStore } from "@/src/features/cart/store";
+import { AnimatedTotal } from "./AnimatedTotal";
+import { CartEmptyState } from "./CartEmptyState";
+import { PromoInputSection } from "./PromoInputSection";
+import { CartRow } from "./CartRow";
+import { cn } from "@/src/lib/utils";
 
 export function CartPanel() {
-  const { open, setOpen } = useCartStore();
+  const { open, setOpen, items, promo, setPromo } = useCartStore();
+  const incQty = useCartStore((s) => s.incQty);
+  const decQty = useCartStore((s) => s.decQty);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const toggleSelected = useCartStore((s) => s.toggleSelected);
+  const toggleSelectAll = useCartStore((s) => s.toggleSelectAll);
+  const setNote = useCartStore((s) => s.setNote);
+  const lineTotal = useCartStore((s) => s.lineTotal);
+  const selectedSubtotal = useCartStore((s) => s.selectedSubtotal);
 
-  return (
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const lenis = useLenis();
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!open) {
+      lenis?.start();
+      return;
+    }
+    lenis?.stop();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      lenis?.start();
+    };
+  }, [open, lenis, setOpen]);
+
+  useEffect(() => {
+    if (!open || !panelRef.current) return;
+    const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+      'button, input, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    first?.focus();
+
+    function onTab(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    }
+    document.addEventListener("keydown", onTab);
+    return () => document.removeEventListener("keydown", onTab);
+  }, [open, items.length]);
+
+  const subtotal = selectedSubtotal();
+  const discount = promo?.discount ?? 0;
+  const total = Math.max(0, subtotal - discount);
+  const allSelected = items.length > 0 && items.every((i) => i.selected);
+  const restaurantName = items[0]?.restaurantName ?? "";
+
+  if (!mounted) return null;
+
+  return createPortal(
     <>
-      {open && (
-        <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setOpen(false)} />
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
+          />
+        )}
+      </AnimatePresence>
 
-      <div className={`fixed top-0 right-0 h-full w-full sm:w-[447px] bg-white z-50 flex flex-col transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}>
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
+        className={cn(
+          "fixed top-0 right-0 h-full w-full sm:w-[447px] bg-white z-[70] flex flex-col transition-transform duration-300",
+          open ? "translate-x-0" : "translate-x-full"
+        )}
+      >
         <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
           <button
             onClick={() => setOpen(false)}
-            className="border border-neutral-300 rounded-[50px] w-[76px] h-[60px] flex items-center justify-center hover:border-[#EF5B5B] transition-colors"
+            className="border border-neutral-300 rounded-[50px] w-[64px] h-[56px] flex items-center justify-center hover:border-[#EF5B5B] transition-colors"
+            aria-label="Close cart"
           >
             <X size={24} className="text-neutral-800" />
           </button>
-          <h2 className="font-heading font-medium text-[25px] leading-[140%] tracking-[0.02em] text-neutral-900">
-            My Cart
-          </h2>
-          <div className="w-[76px]" />
+          <h2 className="font-heading font-medium text-[25px] tracking-[0.02em] text-neutral-900">My Cart</h2>
+          <div className="w-[64px]" />
         </div>
 
-        <div className="px-6 mb-4 flex-shrink-0">
-          <div className="flex items-center justify-center gap-3 bg-[rgba(2,141,255,0.1)] rounded-[18px] h-[52px] px-6">
-            <img src="/cart.svg" alt="" className="w-5 h-5 object-contain" />
-            <span className="font-heading font-light text-[16px] leading-[150%] text-[#028DFF]">
-              You have 3 items in your chart list
-            </span>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-6 pb-4">
-          <div className="border border-neutral-200 rounded-[26px] p-5 flex flex-col gap-4">
-            <h3 className="font-heading font-medium text-[20px] leading-[150%] tracking-[0.02em] text-neutral-800">
-              Oriental Restaurant 1
-            </h3>
-
-            <div className="w-full h-[1px] bg-neutral-200" />
-
-            {ITEMS.map((item, idx) => (
-              <div key={item.id}>
-                <div className="flex items-start gap-3">
-                  <img src="/Selected.svg" alt="selected" className="w-6 h-6 mt-1 flex-shrink-0" />
-
-                  <img src={item.image} alt={item.name} className="w-[91px] h-[91px] object-cover rounded-[16px] flex-shrink-0" />
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-heading font-normal text-[20px] leading-[150%] text-neutral-800">{item.name}</span>
-                      <button className="border border-neutral-300 rounded-[50px] w-[56px] h-[40px] flex items-center justify-center flex-shrink-0 hover:border-[#EF5B5B] transition-colors">
-                        <img src="/edit-2.svg" alt="edit" className="w-4 h-4 object-contain" />
-                      </button>
-                    </div>
-                    <p className="font-heading font-light text-[14px] leading-[150%] text-neutral-800">
-                      ${item.perItem.toFixed(2)} <span className="text-neutral-500">/ item</span>
-                    </p>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex items-center gap-3">
-                        <img src="/Component 1.svg" alt="minus" className="w-7 h-7 object-contain cursor-pointer" />
-                        <span className="font-heading font-semibold text-[20px] leading-[150%] tracking-[0.02em] text-neutral-800 min-w-[20px] text-center">
-                          {item.qty}
-                        </span>
-                        <img src="/Component 2.svg" alt="plus" className="w-7 h-7 object-contain cursor-pointer" />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-heading font-light text-[16px] text-neutral-600">Total :</span>
-                        <span className="font-heading font-semibold text-[20px] leading-[150%] tracking-[0.02em] text-neutral-800">
-                          ${item.total.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {idx < ITEMS.length - 1 && <div className="w-full h-[1px] bg-neutral-200 mt-4" />}
-              </div>
-            ))}
-
-            <div className="w-full h-[1px] bg-neutral-200" />
-
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <img src="/checkmark-circle.svg" alt="promo" className="w-6 h-6 flex-shrink-0" />
-                <div>
-                  <p className="font-heading font-medium text-[20px] leading-[150%] tracking-[0.02em] text-neutral-800">
-                    FOODORI24
-                  </p>
-                  <p className="font-heading font-light text-[16px] leading-[150%] text-neutral-600">
-                    Promo applied successfully!
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-2">
-                <img src="/Frame 1000002712.svg" alt="remove" className="w-6 h-6 cursor-pointer" />
-                <span className="font-heading font-medium text-[20px] leading-[150%] tracking-[0.02em] text-[#188F77]">
-                  -$4.00
+        {items.length === 0 ? (
+          <CartEmptyState onClose={() => setOpen(false)} />
+        ) : (
+          <>
+            <div className="px-6 mb-4 flex-shrink-0">
+              <div className="flex items-center justify-center gap-3 bg-[rgba(2,141,255,0.1)] rounded-[18px] h-[52px] px-6">
+                <ShoppingCart size={20} className="text-[#028DFF]" />
+                <span className="font-heading font-light text-[15px] text-[#028DFF]">
+                  You have {items.reduce((s, i) => s + i.qty, 0)} items in your cart
                 </span>
               </div>
             </div>
 
-            <button className="border border-neutral-300 rounded-[50px] h-[40px] w-[194px] font-heading font-medium text-[16px] text-[#EF5B5B] hover:border-[#EF5B5B] transition-colors">
-              Change Code
-            </button>
-          </div>
-        </div>
+            <div className="flex-1 overflow-y-auto px-6 pb-4">
+              <div className="border border-neutral-200 rounded-[26px] p-5 flex flex-col gap-4">
+                <h3 className="font-heading font-medium text-[20px] tracking-[0.02em] text-neutral-800">
+                  {restaurantName}
+                </h3>
+                <div className="w-full h-px bg-neutral-200" />
 
-        <div className="px-6 py-6 border-t border-neutral-100 shadow-[6px_0_25px_10px_rgba(0,0,0,0.06)] flex-shrink-0">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="w-[18px] h-[18px] rounded-[5px] border border-neutral-800 flex-shrink-0 cursor-pointer mt-1" />
-              <div>
-                <span className="font-heading font-light text-[18px] leading-[150%] text-neutral-800 block">All Items</span>
-                <p className="font-heading font-light text-[16px] leading-[150%] text-neutral-500">
-                  Total : <span className="font-heading font-medium text-[20px] tracking-[0.02em] text-[#EF5B5B]">$28.10</span>
-                </p>
+                <AnimatePresence initial={false}>
+                  {items.map((item) => (
+                    <CartRow
+                      key={item.lineId}
+                      item={item}
+                      total={lineTotal(item)}
+                      onInc={() => incQty(item.lineId)}
+                      onDec={() => decQty(item.lineId)}
+                      onRemove={() => removeItem(item.lineId)}
+                      onToggle={() => toggleSelected(item.lineId)}
+                      onNote={(note) => setNote(item.lineId, note)}
+                    />
+                  ))}
+                </AnimatePresence>
+
+                <PromoInputSection subtotal={subtotal} promo={promo} setPromo={setPromo} />
               </div>
             </div>
-            <Link
-              href="/checkout"
-              onClick={() => setOpen(false)}
-              className="bg-[#EF5B5B] hover:bg-[#CD424E] transition-colors rounded-[50px] h-[56px] px-10 flex items-center justify-center font-heading font-medium text-[16px] text-white uppercase tracking-wider -mt-1"
-            >
-              Checkout
-            </Link>
-          </div>
-        </div>
+
+            <div className="px-6 py-6 border-t border-neutral-100 shadow-[0_-6px_25px_0_rgba(0,0,0,0.06)] flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <button onClick={() => toggleSelectAll(!allSelected)} className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "w-[20px] h-[20px] rounded-[6px] border flex items-center justify-center transition-colors",
+                      allSelected ? "bg-[#EF5B5B] border-[#EF5B5B]" : "border-neutral-800"
+                    )}
+                  >
+                    {allSelected && <Check size={14} className="text-white" />}
+                  </span>
+                  <div className="text-left">
+                    <span className="font-heading font-light text-[18px] text-neutral-800 block">All Items</span>
+                    <p className="font-heading font-light text-[15px] text-neutral-500">
+                      Total :{" "}
+                      <span className="font-heading font-medium text-[20px] text-[#EF5B5B]">
+                        <AnimatedTotal value={total} />
+                      </span>
+                    </p>
+                  </div>
+                </button>
+                <Link
+                  href="/checkout"
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "rounded-[50px] h-[56px] px-8 flex items-center justify-center font-heading font-medium text-[16px] text-white uppercase tracking-wider transition-colors",
+                    subtotal > 0 ? "bg-[#EF5B5B] hover:bg-[#CD424E]" : "bg-neutral-300 pointer-events-none"
+                  )}
+                >
+                  Checkout
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-    </>
+    </>,
+    document.body
   );
 }

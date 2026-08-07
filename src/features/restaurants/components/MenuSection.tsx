@@ -1,23 +1,82 @@
+"use client";
+
+import { useState } from "react";
 import { MenuItemCard } from "./MenuItemCard";
+import { DishModal } from "@/src/features/cart/components/DishModal";
+import { ClearCartDialog } from "@/src/features/cart/components/ClearCartDialog";
+import { useAddGuard } from "@/src/features/cart/hooks/useAddGuard";
 import type { MenuItemCardData } from "@/src/lib/types/meals";
 
-export function MenuSection({ mainCourse, drinksDesserts }: { mainCourse: MenuItemCardData[]; drinksDesserts: MenuItemCardData[] }) {
+interface Props {
+  mainCourse: MenuItemCardData[];
+  drinksDesserts: MenuItemCardData[];
+  restaurantId: string;
+  restaurantName: string;
+}
+
+export function MenuSection({ mainCourse, drinksDesserts, restaurantId, restaurantName }: Props) {
+  const [modalDish, setModalDish] = useState<MenuItemCardData | null>(null);
+  const { guard, pending, confirm, cancel } = useAddGuard();
+
   return (
     <div className="bg-white py-8 lg:py-12">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col gap-12 lg:gap-16">
         <section id="main-course" className="scroll-mt-24">
           <h2 className="font-heading font-semibold text-[24px] sm:text-[31px] leading-[132%] tracking-[0.02em] text-neutral-800 mb-6 lg:mb-8">Main Course</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
-            {mainCourse.map((m) => <MenuItemCard key={m.id} {...m} />)}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-start">
+            {mainCourse.map((m) => (
+              <MenuItemCard
+                key={m.id}
+                {...m}
+                restaurantId={restaurantId}
+                restaurantName={restaurantName}
+                onOpenModal={() => setModalDish(m)}
+              />
+            ))}
           </div>
         </section>
+
         <section id="drinks-desserts" className="scroll-mt-24">
           <h2 className="font-heading font-semibold text-[24px] sm:text-[31px] leading-[132%] tracking-[0.02em] text-neutral-800 mb-6 lg:mb-8">Drinks &amp; Desserts</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
-            {drinksDesserts.map((m) => <MenuItemCard key={m.id} {...m} />)}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-start">
+            {drinksDesserts.map((m) => (
+              <MenuItemCard
+                key={m.id}
+                {...m}
+                restaurantId={restaurantId}
+                restaurantName={restaurantName}
+                onOpenModal={() => setModalDish(m)}
+              />
+            ))}
           </div>
         </section>
       </div>
+
+      <DishModal
+        open={!!modalDish}
+        dish={
+          modalDish
+            ? {
+                id: modalDish.id,
+                name: modalDish.name,
+                desc: modalDish.desc,
+                image: modalDish.image,
+                basePrice: modalDish.price,
+                restaurantId,
+                restaurantName,
+              }
+            : null
+        }
+        onClose={() => setModalDish(null)}
+        onBeforeAdd={(rid, add) => guard(rid, restaurantName, add)}
+      />
+
+      <ClearCartDialog
+        open={!!pending}
+        restaurantName={pending?.restaurantName ?? ""}
+        onConfirm={confirm}
+        onCancel={cancel}
+      />
     </div>
   );
 }

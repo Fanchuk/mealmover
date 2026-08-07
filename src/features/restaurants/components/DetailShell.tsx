@@ -1,18 +1,15 @@
 "use client";
 
 import { ReactNode } from "react";
-import { FlyToCartProvider } from "./FlyToCartProvider";
 import { StickyMenuNav } from "./StickyMenuNav";
-import { CartButton } from "./CartButton";
+import { FloatingDots } from "@/src/components/ui/FloatingDots";
 
 export function DetailShell({ children }: { children: ReactNode }) {
   return (
-    <FlyToCartProvider>
+    <div className="relative overflow-hidden">
+      <FloatingDots />
       <StickyMenuNav />
-      {children}
-      <div className="fixed bottom-6 right-6 z-50">
-        <CartButton />
-      </div>
-    </FlyToCartProvider>
+      <div className="relative z-10">{children}</div>
+    </div>
   );
 }

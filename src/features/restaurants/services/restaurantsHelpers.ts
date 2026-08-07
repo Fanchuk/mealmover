@@ -9,7 +9,7 @@ export function buildPrismaWhereClause(filters: RestaurantsFilters): Prisma.Rest
   
   if (filters.city) where.city = { name: { equals: filters.city, mode: "insensitive" } };
   
-  if (filters.price) where.priceLevel = parseInt(filters.price, 10);
+  if (filters.price) where.priceLevel = filters.price.length;
   
   if (filters.minRating) where.rating = { gte: filters.minRating };
   

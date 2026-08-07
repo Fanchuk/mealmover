@@ -25,13 +25,17 @@ export default async function RestaurantsPage({ searchParams }: RestaurantsPageP
     pageSize: 8,
   });
 
-  return (
-    <>
+return (
+  <div className="relative bg-white overflow-hidden">
+    <div className="relative z-10">
       <RestaurantsHero />
-      <ScrollReveal><PromoBanner restaurant={featured} /></ScrollReveal>
-      <ScrollReveal><ExploreSection /></ScrollReveal>
-      <ScrollReveal><RestaurantsGrid initialItems={items} totalCount={totalCount} /></ScrollReveal>
-      <ScrollReveal><DownloadAppSection /></ScrollReveal>
-    </>
-  );
+      <div className="-mt-24 lg:-mt-28">
+        <ScrollReveal><PromoBanner restaurant={featured} /></ScrollReveal>
+        <ScrollReveal><ExploreSection /></ScrollReveal>
+        <ScrollReveal><RestaurantsGrid initialItems={items} totalCount={totalCount} /></ScrollReveal>
+        <ScrollReveal><DownloadAppSection /></ScrollReveal>
+      </div>
+    </div>
+  </div>
+);
 }

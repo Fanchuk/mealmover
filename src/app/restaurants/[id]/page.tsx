@@ -7,10 +7,11 @@ import { LocationMap } from "@/src/features/restaurants/components/LocationMap";
 import { DetailShell } from "@/src/features/restaurants/components/DetailShell";
 import { getMealsByCategory, mealToOfferCard, mealToMenuItemCard } from "@/src/lib/themealdb";
 import { getCocktailsByCategory, cocktailToMenuItemCard } from "@/src/lib/thecocktaildb";
-import { getRestaurantBySlug, getReviewsByRestaurant, getReviewStatsByRestaurant } from "@/src/features/restaurants/services/restaurantDetails";
+import { getRestaurantBySlug, getReviewsByRestaurant, getReviewStatsByRestaurant, getDeliveryLocations } from "@/src/features/restaurants/services/restaurantDetails";
 import { canUserReview } from "@/src/features/restaurants/services/reviewActions";
 import { RESTAURANT_MENU_MAP } from "@/src/features/restaurants/menu-map";
 import { mapReview } from "@/src/lib/mapReview";
+import { FloatingDots } from "@/src/components/ui/FloatingDots";
 
 export default async function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,10 +23,11 @@ export default async function RestaurantDetailPage({ params }: { params: Promise
 
   if (!restaurant || !config) notFound();
 
-  const [reviews, reviewStats, canReview] = await Promise.all([
+  const [reviews, reviewStats, canReview, locations] = await Promise.all([
     getReviewsByRestaurant(restaurant.id),
     getReviewStatsByRestaurant(restaurant.id),
     canUserReview(restaurant.id),
+    getDeliveryLocations(),
   ]);
 
   const [cat1, cat2, mainCat, drinks] = await Promise.all([
@@ -40,23 +42,37 @@ export default async function RestaurantDetailPage({ params }: { params: Promise
   const drinksDesserts = drinks.slice(0, 4).map(cocktailToMenuItemCard);
 
   return (
-    <DetailShell>
-      <RestaurantDetailHero restaurant={restaurant} />
-      <TodaysOffer offers={todaysOffers} />
-      <MenuSection mainCourse={mainCourse} drinksDesserts={drinksDesserts} />
-      <LocationMap
-        lat={(restaurant as { lat?: number | null }).lat ?? null}
-        lng={(restaurant as { lng?: number | null }).lng ?? null}
-        address={restaurant.street}
-        name={restaurant.name}
-      />
-      <CustomerReviews
-        restaurantId={restaurant.id}
-        canReview={canReview}
-        reviews={reviews.map(mapReview)}
-        stats={reviewStats}
-      />
-    </DetailShell>
+    <div className="relative overflow-hidden">
+      <FloatingDots />
+      <div className="relative z-10">
+        <DetailShell>
+          <RestaurantDetailHero restaurant={restaurant} locations={locations} />
+          <TodaysOffer 
+            offers={todaysOffers} 
+            restaurantId={restaurant.id} 
+            restaurantName={restaurant.name} 
+          />
+          <MenuSection 
+            mainCourse={mainCourse} 
+            drinksDesserts={drinksDesserts} 
+            restaurantId={restaurant.id} 
+            restaurantName={restaurant.name} 
+          />
+          <LocationMap
+            lat={(restaurant as { lat?: number | null }).lat ?? null}
+            lng={(restaurant as { lng?: number | null }).lng ?? null}
+            address={restaurant.street}
+            name={restaurant.name}
+          />
+          <CustomerReviews
+            restaurantId={restaurant.id}
+            canReview={canReview}
+            reviews={reviews.map(mapReview)}
+            stats={reviewStats}
+          />
+        </DetailShell>
+      </div>
+    </div>
   );
 }
 

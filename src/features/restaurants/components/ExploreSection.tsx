@@ -18,7 +18,7 @@ const CATEGORIES = [
 export function ExploreSection() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const active = searchParams.get('categoruy')
+    const active = searchParams.get('category')
 
     const [locating, setLocating] = useState(false)
 

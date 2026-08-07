@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
 import { useCartStore } from "@/src/features/cart/store";
+import { useFlyToCart } from "@/src/features/restaurants/components/FlyToCartProvider";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -20,6 +22,15 @@ export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { setOpen: setCartOpen } = useCartStore();
+  const items = useCartStore((s) => s.items);
+  const count = items.reduce((sum, i) => sum + i.qty, 0);
+
+  const cartRef = useRef<HTMLButtonElement>(null);
+  const { registerCartTarget } = useFlyToCart();
+
+  useEffect(() => {
+    registerCartTarget(cartRef.current);
+  }, [registerCartTarget]);
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_2px_16px_0_rgba(0,0,0,0.06)]">
@@ -52,10 +63,24 @@ export function Navbar() {
 
         <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0 ml-auto lg:ml-0">
           <button
+            ref={cartRef}
             onClick={() => setCartOpen(true)}
-            className="text-neutral-500 hover:text-[#EF5B5B] transition-colors"
+            className="relative text-neutral-500 hover:text-[#EF5B5B] transition-colors"
           >
             <img src="/shopping-cart.svg" alt="Cart" className="w-6 h-6" />
+            <AnimatePresence>
+              {count > 0 && (
+                <motion.span
+                  key={count}
+                  initial={{ scale: 0.4 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 600, damping: 15 }}
+                  className="absolute -top-2 -right-2 min-w-[20px] h-[20px] px-1 rounded-full bg-[#EF5B5B] text-white text-[11px] font-bold flex items-center justify-center"
+                >
+                  {count}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </button>
 
           <Link

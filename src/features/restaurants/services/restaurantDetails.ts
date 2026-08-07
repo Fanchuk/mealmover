@@ -22,6 +22,10 @@ export async function getReviewsByRestaurant(restaurantId: string) {
   });
 }
 
+export async function getDeliveryLocations() {
+  return prisma.deliveryLocation.findMany({ orderBy: { order: "asc" } });
+}
+
 export async function getReviewStatsByRestaurant(restaurantId: string) {
   const aspects = ["PRICE", "TASTE", "HYGIENE", "PACKAGING"] as const;
   
