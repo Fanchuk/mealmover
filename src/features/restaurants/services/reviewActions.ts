@@ -45,7 +45,7 @@ export async function submitReview(
   if (!allowed) return { ok: false, error: "Only customers with a delivered order can review." };
 
   await prisma.review.create({
-    data: { restaurantId, userId: session.user.id, rating, comment, aspect, isVisible: true },
+    data: { restaurantId, userId: session.user.id, rating, comment, aspect, isVisible: true, purchasedAt: new Date() },
   });
 
   revalidatePath("/restaurants/[id]", "page");
