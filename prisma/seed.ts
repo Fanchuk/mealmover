@@ -200,7 +200,7 @@ type DishSeed = {
   slug: string;
   description: string;
   category: string;
-  section: MenuSection;
+  section: typeof MenuSection[keyof typeof MenuSection];
   price: number;
   oldPrice?: number;
   calories: number;
@@ -552,9 +552,9 @@ async function main() {
   const orderPlan: {
     number: string;
     restaurantSlug: string;
-    status: OrderStatus;
-    payment: PaymentMethod;
-    paid: PaymentStatus;
+    status: typeof OrderStatus[keyof typeof OrderStatus];
+    payment: typeof PaymentMethod[keyof typeof PaymentMethod];
+    paid: typeof PaymentStatus[keyof typeof PaymentStatus];
     ago: number;
     driverIndex: number | null;
     rating: number | null;
