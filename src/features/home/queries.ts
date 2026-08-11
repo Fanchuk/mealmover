@@ -11,7 +11,6 @@ export async function getTestimonials() {
 
 export async function getFaqs() {
   return prisma.faq.findMany({
-    where: { isActive: true },
     orderBy: { order: "asc" },
   });
 }
