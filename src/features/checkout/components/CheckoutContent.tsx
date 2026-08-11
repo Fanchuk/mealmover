@@ -10,19 +10,10 @@ import { useCartStore } from "@/src/features/cart/store";
 import { CheckoutFormSchema, type CheckoutFormValues } from "../schema";
 import { placeOrder } from "../services/checkoutActions";
 import { haversineKm, shippingCost } from "../lib/delivery";
-import { DeliveryAddress } from "./DeliveryAddress";
+import { DeliveryAddress, type Address } from "./DeliveryAddress";
 import { OrderSummary } from "./OrderSummary";
 import { PaymentMethod } from "./PaymentMethod";
 import { PaymentSummary } from "./PaymentSummary";
-
-interface Address {
-  id: string;
-  title: string;
-  street: string;
-  note: string | null;
-  lat: number | null;
-  lng: number | null;
-}
 
 interface Restaurant {
   id: string;
