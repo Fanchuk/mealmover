@@ -1,7 +1,8 @@
 import { prisma } from "@/src/lib/prisma";
 
 export async function getFeatures() {
-  return prisma.feature.findMany({ orderBy: { order: "asc" } });
+  const features = await prisma.feature.findMany({ orderBy: { order: "asc" } });
+  return features.map((f) => ({ ...f, description: f.text }));
 }
 
 export async function getTestimonials() {
