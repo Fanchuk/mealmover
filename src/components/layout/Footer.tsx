@@ -1,11 +1,32 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+"use client";
 
-const QUICK_LINKS = ["Home","About","Restaurants","Blog","Contact"];
-const COMPANY = [{ label:"Why MealMover", href:"#"},{ label:"Partner With Us", href:"#"},{ label:"FAQs", href:"#"}];
-const SOCIAL = ["Instagram","Twitter","Facebook","LinkedIn"];
+import Link from "next/link";
+import { useActionState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
+import toast from "react-hot-toast";
+import { subscribeNewsletter, type NewsletterState } from "@/src/features/blog/services/newsletterAction";
+
+const QUICK_LINKS = ["Home", "About", "Restaurants", "Blog", "Contact"];
+const COMPANY = [
+  { label: "Why MealMover", href: "/about" },
+  { label: "Partner With Us", href: "/about#partner" },
+  { label: "FAQs", href: "/about#faq" },
+];
+const SOCIAL = [
+  { label: "Instagram", href: "https://instagram.com/mealmover" },
+  { label: "Twitter", href: "https://twitter.com/mealmover" },
+  { label: "Facebook", href: "https://facebook.com/mealmover" },
+  { label: "LinkedIn", href: "https://linkedin.com/company/mealmover" },
+];
 
 export function Footer() {
+  const [state, formAction, pending] = useActionState(subscribeNewsletter, { ok: false } as NewsletterState);
+
+  useEffect(() => {
+    if (state.ok) toast.success("Subscribed! Check your inbox.");
+    else if (state.error) toast.error(state.error);
+  }, [state]);
+
   return (
     <footer className="bg-white border-t border-neutral-200">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-12 lg:py-16">
@@ -38,7 +59,7 @@ export function Footer() {
                 <h4 className="font-heading font-bold text-[20px] lg:text-[25px] leading-[140%] tracking-[0.02em] text-neutral-800 mb-4">Social</h4>
                 <ul className="flex flex-col gap-3">
                   {SOCIAL.map((s) => (
-                    <li key={s}><Link href="#" className="font-heading font-medium text-[16px] text-[#EF5B5B] hover:text-[#CD424E]">{s}</Link></li>
+                    <li key={s.label}><a href={s.href} target="_blank" rel="noopener noreferrer" className="font-heading font-medium text-[16px] text-[#EF5B5B] hover:text-[#CD424E]">{s.label}</a></li>
                   ))}
                 </ul>
               </div>
@@ -54,20 +75,24 @@ export function Footer() {
                 <p className="font-heading font-light text-[16px] leading-[150%] text-neutral-700 mt-1">Question or feedback?<br />We&apos;d love to hear from you</p>
               </div>
               <div className="flex gap-2">
-                <img src="/Frame 1000002736.png" alt="Play Store" className="w-9 h-9 object-contain" />
-                <img src="/Frame 1000002735.png" alt="App Store" className="w-9 h-9 object-contain" />
+                <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">
+                  <img src="/Frame 1000002736.png" alt="Play Store" className="w-9 h-9 object-contain hover:scale-110 transition-transform" />
+                </a>
+                <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer">
+                  <img src="/Frame 1000002735.png" alt="App Store" className="w-9 h-9 object-contain hover:scale-110 transition-transform" />
+                </a>
               </div>
             </div>
 
-            <div className="mt-8 flex items-center bg-neutral-100 border border-neutral-200 rounded-[50px] h-[60px] px-5 gap-3">
-              <input type="email" placeholder="Enter your Email..." className="flex-1 min-w-0 bg-transparent outline-none font-heading font-normal text-[16px] text-neutral-700 placeholder:text-neutral-400" />
-              <button className="w-10 h-10 rounded-full bg-[#EF5B5B] flex items-center justify-center text-white hover:bg-[#CD424E] transition-colors flex-shrink-0">
+            <form action={formAction} className="mt-8 flex items-center bg-neutral-100 border border-neutral-200 rounded-[50px] h-[60px] px-5 gap-3">
+              <input name="email" type="email" required placeholder="Enter your Email..." className="flex-1 min-w-0 bg-transparent outline-none font-heading font-normal text-[16px] text-neutral-700 placeholder:text-neutral-400" />
+              <button type="submit" disabled={pending} className="w-10 h-10 rounded-full bg-[#EF5B5B] flex items-center justify-center text-white hover:bg-[#CD424E] transition-colors flex-shrink-0 disabled:opacity-60">
                 <ArrowRight size={16} />
               </button>
-            </div>
+            </form>
 
             <div className="mt-8 flex flex-wrap items-center gap-4 lg:gap-6">
-              {["Privacy policy","Terms of service","Shipping policy","Return policy"].map((p) => (
+              {["Privacy policy", "Terms of service", "Shipping policy", "Return policy"].map((p) => (
                 <Link key={p} href="#" className="font-heading font-light text-[14px] text-neutral-500 hover:text-neutral-700">{p}</Link>
               ))}
             </div>

@@ -19,12 +19,12 @@ interface Props {
 
 export function TestimonialsSection({ testimonials }: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start" },
+    { loop: true, align: "start", dragFree: true },
     [
       Autoplay({
-        delay: 5000, 
-        stopOnInteraction: false, 
-        stopOnMouseEnter: true, 
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
       }),
     ]
   );
@@ -77,7 +77,6 @@ export function TestimonialsSection({ testimonials }: Props) {
           >
             <div className="flex h-full gap-4">
               {testimonials.map((t) => (
-                
                 <div
                   key={t.id}
                   className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-0.5rem)] min-w-0 bg-white rounded-[20px] p-5 lg:p-8 shadow-[0_16px_40px_0_rgba(0,0,0,0.05)] flex flex-col gap-4"
@@ -99,7 +98,6 @@ export function TestimonialsSection({ testimonials }: Props) {
                     {t.text}
                   </p>
                 </div>
-
               ))}
             </div>
           </div>

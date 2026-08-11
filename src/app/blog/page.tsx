@@ -1,19 +1,26 @@
-import { BlogHero } from "@/src/features/blog/components/BlogHero";
+import { getPosts, getPopularPosts, getAllTags } from "@/src/features/blog/services/blogApi";
 import { BlogContent } from "@/src/features/blog/components/BlogContent";
-import { getBlogPosts, getPopularBlogPosts, getBlogTags, getBlogGalleryImages } from "@/src/features/blog/queries";
 
-export default async function BlogPage() {
-  const [{ posts, total }, popular, tags, gallery] = await Promise.all([
-    getBlogPosts(3, 0),
-    getPopularBlogPosts(),
-    getBlogTags(),
-    getBlogGalleryImages()
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; tag?: string }>;
+}) {
+  const sp = await searchParams;
+
+  const [posts, popular, tags] = await Promise.all([
+    getPosts({ q: sp.q, tag: sp.tag }),
+    getPopularPosts(),
+    getAllTags(),
   ]);
 
   return (
-    <>
-      <BlogHero />
-      <BlogContent posts={posts} total={total} popular={popular} tags={tags} gallery={gallery} />
-    </>
+    <BlogContent
+      posts={posts}
+      popular={popular}
+      tags={tags}
+      activeQ={sp.q ?? ""}
+      activeTag={sp.tag ?? ""}
+    />
   );
 }

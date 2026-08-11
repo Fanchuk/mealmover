@@ -1,34 +1,39 @@
 import { notFound } from "next/navigation";
+import { getPostDetail, getAdjacentPosts, getRelatedPosts, getComments } from "@/src/features/blog/services/postDetailApi";
 import { BlogDetailContent } from "@/src/features/blog/components/BlogDetailContent";
-import { BlogDetailSidebar } from "@/src/features/blog/components/BlogDetailSidebar";
-import { getBlogPostById, getBlogPostComments, getAdjacentPosts, getPopularBlogPosts, getBlogTags, getBlogGalleryImages } from "@/src/features/blog/queries";
 
-export default async function BlogDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const id = Number(slug);
-  if (isNaN(id)) notFound();
+  const postId = Number(slug);
 
-  const [post, comments, adjacent, popular, tags, gallery] = await Promise.all([
-    getBlogPostById(id),
-    getBlogPostComments(id),
-    getAdjacentPosts(id),
-    getPopularBlogPosts(),
-    getBlogTags(),
-    getBlogGalleryImages(),
-  ]);
+  if (isNaN(postId)) notFound();
 
+  const post = await getPostDetail(postId);
   if (!post) notFound();
 
+  const [{ prevId, nextId }, related, comments] = await Promise.all([
+    getAdjacentPosts(postId),
+    getRelatedPosts(post.tags, postId),
+    getComments(postId),
+  ]);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    articleBody: post.body,
+  };
+
   return (
-    <section className="bg-white py-8 lg:py-14">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col lg:flex-row gap-8 lg:gap-12">
-        <BlogDetailContent post={post} comments={comments} adjacent={adjacent} />
-        <BlogDetailSidebar popular={popular} tags={tags} gallery={gallery} />
-      </div>
-    </section>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <BlogDetailContent
+        post={post}
+        prevId={prevId}
+        nextId={nextId}
+        related={related}
+        comments={comments}
+      />
+    </>
   );
 }

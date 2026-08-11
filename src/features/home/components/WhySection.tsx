@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface Feature {
   id: string;
@@ -10,8 +11,13 @@ interface Feature {
 export function WhySection({ features }: { features: Feature[] }) {
   return (
     <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "15%", right: "5%" },
+        { top: "70%", left: "10%" },
+        { top: "40%", right: "20%" },
+      ]} />
       <Image src="/015-spinach (1).png" alt="" width={150} height={150} className="absolute right-[-40px] sm:right-[-20px] top-[30%] lg:top-[40%] w-[100px] sm:w-[150px] lg:w-[180px] h-auto object-contain z-10 drop-shadow-lg" />
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-20">
         <div className="relative order-2 lg:order-1 flex justify-center">
           <Image src="/Layer_9.svg" alt="Why MealMover" width={500} height={500} className="w-full max-w-[500px]" />
         </div>

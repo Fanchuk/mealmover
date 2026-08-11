@@ -69,14 +69,6 @@ enum ReviewAspect {
   PACKAGING
 }
 
-enum FaqTab {
-  GENERAL
-  TRANSACTION
-  PAYMENTS
-  RETURNS
-  CAREERS
-}
-
 // ============================================================
 // AUTH (NextAuth v5 + @auth/prisma-adapter)
 // ============================================================
@@ -94,14 +86,13 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts     Account[]
-  sessions     Session[]
-  addresses    Address[]
-  orders       Order[]
-  reviews      Review[]
-  favorites    Favorite[]
-  cart         Cart?
-  blogComments BlogComment[]
+  accounts  Account[]
+  sessions  Session[]
+  addresses Address[]
+  orders    Order[]
+  reviews   Review[]
+  favorites Favorite[]
+  cart      Cart?
 
   @@index([email])
 }
@@ -451,57 +442,51 @@ model Review {
 // ============================================================
 
 model BlogComment {
-  id             String   @id @default(cuid())
-  externalPostId String
-  userId         String?
-  authorName     String
-  authorEmail    String
-  content        String   @db.Text
-  rating         Int      @default(5)
-  isApproved     Boolean  @default(true)
-  createdAt      DateTime @default(now())
+  id        String   @id @default(cuid())
+  postId    Int
+  name      String
+  content   String   @db.Text
+  rating    Int      @default(5)
+  createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([externalPostId])
+  @@index([postId])
 }
 
 // ============================================================
-// КОНТЕНТ САЙТУ
+// КОНТЕНТ САЙТУ (Оновлено для About 7.9)
 // ============================================================
 
 model Feature {
-  id          String @id @default(cuid())
-  title       String
-  description String
-  icon        String
-  order       Int    @default(0)
+  id    String @id @default(cuid())
+  icon  String
+  title String
+  text  String @db.Text
+  order Int    @default(0)
 }
 
 model HowItWorksStep {
-  id          String @id @default(cuid())
-  title       String
-  description String
-  image       String
-  order       Int    @default(0)
+  id    String @id @default(cuid())
+  step  Int
+  title String
+  text  String @db.Text
+  icon  String
 }
 
 model TeamMember {
   id        String  @id @default(cuid())
   name      String
   role      String
-  bio       String
   avatar    String
-  facebook  String?
+  twitter   String?
+  linkedin  String?
   instagram String?
   order     Int     @default(0)
 }
 
 model Partner {
-  id    String @id @default(cuid())
-  name  String @unique
-  logo  String
-  order Int    @default(0)
+  id   String @id @default(cuid())
+  name String @unique
+  logo String
 }
 
 model Testimonial {
@@ -510,19 +495,8 @@ model Testimonial {
   role   String
   avatar String
   text   String @db.Text
-  rating Float  @default(4.9)
+  rating Int    @default(5)
   order  Int    @default(0)
-}
-
-model Faq {
-  id       String  @id @default(cuid())
-  question String
-  answer   String  @db.Text
-  tab      FaqTab  @default(GENERAL)
-  order    Int     @default(0)
-  isActive Boolean @default(true)
-
-  @@index([tab])
 }
 
 model Stat {
@@ -530,6 +504,13 @@ model Stat {
   value String
   label String
   order Int    @default(0)
+}
+
+model Faq {
+  id       String @id @default(cuid())
+  question String
+  answer   String @db.Text
+  order    Int    @default(0)
 }
 
 // ============================================================

@@ -1,23 +1,17 @@
 "use client";
+
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
+import { FAQS } from "../data/faqs";
 
 const TABS = ["General", "Transaction", "Payments", "Returns", "Careers"];
 
-const FAQS = [
-  { q: "Do you charge per hour our per project rate?", a: null },
-  { q: "Can I have the plan for one package or any bundling?", a: null },
-  {
-    q: "Can I consult first when I feel confused what should I choose?",
-    a: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar quis turpis et efficitur.\n\nSed accumsan nisi eget sodales cursus. Nullam semper quis turpis varius dapibus. Integer orci nisi, finibus id accumsan eu, ultricies vel lectus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In iaculis commodo imperdiet.",
-  },
-  { q: "Can I have any revision if the work unexpectedly?", a: null },
-];
-
 export function AboutFaq() {
   const [activeTab, setActiveTab] = useState("General");
-  const [open, setOpen] = useState<number | null>(2);
+  const [open, setOpen] = useState<number | null>(null);
+
+  const filtered = FAQS.filter((f) => f.cat === activeTab);
 
   return (
     <section className="bg-white py-12 lg:py-20">
@@ -31,7 +25,7 @@ export function AboutFaq() {
           {TABS.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => { setActiveTab(tab); setOpen(null); }}
               className={cn(
                 "rounded-[50px] h-[52px] px-8 font-heading font-medium text-[16px] transition-colors border",
                 activeTab === tab ? "bg-[#EF5B5B] border-[#CD424E] text-white" : "border-neutral-300 text-[#EF5B5B] hover:border-[#EF5B5B]"
@@ -43,7 +37,7 @@ export function AboutFaq() {
         </div>
 
         <div className="w-full flex flex-col">
-          {FAQS.map((faq, i) => (
+          {filtered.map((faq, i) => (
             <div key={i} className="border-b border-neutral-200 py-6">
               <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between gap-4 text-left">
                 <span className="font-heading font-normal text-[18px] sm:text-[20px] leading-[150%] text-neutral-800">{faq.q}</span>

@@ -3,15 +3,6 @@
  *
  * Run:  npx prisma db push && npx tsx prisma/seed.ts
  * or via package.json:  "prisma": { "seed": "tsx prisma/seed.ts" } → npx prisma db seed
- *
- * Here lies everything that is NOT fetched from external APIs:
- * cities, categories, tags, restaurants, menus (dishes), users, addresses,
- * couriers, promo codes, orders, reviews, and section content (FAQ, team, partners...).
- *
- * Blog posts are NOT seeded — they are fetched from DummyJSON, only comments are stored in the DB.
- *
- * ⚠️ Images are taken from picsum.photos / pravatar.cc.
- * Add them to next.config.ts → images.remotePatterns.
  */
 
 import "dotenv/config";
@@ -25,7 +16,6 @@ const prisma = new PrismaClient({ adapter });
 // Constants instead of enum imports
 const MenuSection = { TODAYS_OFFER: "TODAYS_OFFER", MAIN_COURSE: "MAIN_COURSE", DRINKS_DESSERTS: "DRINKS_DESSERTS" } as const;
 const ReviewAspect = { PRICE: "PRICE", TASTE: "TASTE", HYGIENE: "HYGIENE", PACKAGING: "PACKAGING" } as const;
-const FaqTab = { GENERAL: "GENERAL", TRANSACTION: "TRANSACTION", PAYMENTS: "PAYMENTS", RETURNS: "RETURNS", CAREERS: "CAREERS" } as const;
 const PromoType = { PERCENT: "PERCENT", FIXED: "FIXED" } as const;
 const AddressLabel = { HOME: "HOME", OFFICE: "OFFICE", OTHER: "OTHER" } as const;
 const OrderStatus = { DRAFT: "DRAFT", PENDING: "PENDING", CONFIRMED: "CONFIRMED", PREPARING: "PREPARING", ON_THE_WAY: "ON_THE_WAY", DELIVERED: "DELIVERED", CANCELLED: "CANCELLED" } as const;
@@ -55,7 +45,7 @@ const DELIVERY_LOCATIONS = [
   { title: "Merdeka St",    street: "Merdeka Street, 3 Jakarta",   city: "Jakarta",  lat: -6.1754, lng: 106.8272, isDefault: false, order: 5 },
 ];
 
-// ── 2. CATEGORIES (first 5 are shown on the homepage) ───────────
+// ── 2. CATEGORIES ───────────
 const CATEGORIES = [
   { name: "Fast Food",  slug: "fast-food",  icon: "/Hamburger.svg",         order: 1 },
   { name: "Dessert",    slug: "dessert",    icon: "/Ice_cream.svg",         order: 2 },
@@ -204,7 +194,7 @@ const RESTAURANTS: RestaurantSeed[] = [
   },
 ];
 
-// ── 5. DISH CATALOG (same template for all restaurants) ──
+// ── 5. DISH CATALOG ──
 type DishSeed = {
   name: string;
   slug: string;
@@ -242,65 +232,54 @@ const DISHES: DishSeed[] = [
   { name: "Choco Biscuit",        slug: "choco-biscuit",        description: "Dark chocolate & berries",   category: "dessert",    section: MenuSection.DRINKS_DESSERTS, price: 10.02, oldPrice: 32.10, calories: 460, prepTimeMin: 7 },
 ];
 
-// ── 6. SITE CONTENT ─────────────────────────────────────────
-const FEATURES = [
-  { title: "Fresh Food",    description: "Daily fresh products from local suppliers.", icon: "/takoyaki.svg",      order: 1 },
-  { title: "Fast Delivery", description: "Average delivery time is 24 minutes across the city.", icon: "/fast delivery.svg", order: 2 },
-  { title: "Quality Food",  description: "Every restaurant undergoes a quality check.",   icon: "/award.svg",         order: 3 },
-  { title: "24/7 Service",  description: "Support and couriers are available 24/7.",    icon: "/smile.svg",         order: 4 },
+// ── 6. SITE CONTENT (About 7.9) ──────────────────────────────
+const STATS = [
+  { value: "5000", label: "Happy customers", order: 1 },
+  { value: "15", label: "Cities covered", order: 2 },
+  { value: "2", label: "Best delivery app 2024", order: 3 },
 ];
 
 const HOW_IT_WORKS = [
-  { title: "Online Order with Our Platform", description: "Choose a restaurant and place your order in a minute.", image: img("step-order", 400, 400),   order: 1 },
-  { title: "The Chef will Cook Your Food",   description: "The kitchen receives your order instantly.",              image: img("step-cook", 400, 400),    order: 2 },
-  { title: "Wait for the Courier to Deliver",description: "Track your courier on the map in real-time.",   image: img("step-courier", 400, 400), order: 3 },
-  { title: "The Order Reaches You",          description: "Receive your order and leave a review.",          image: img("step-done", 400, 400),    order: 4 },
+  { step: 1, title: "Choose restaurant", text: "Browse and pick your favourite spot.", icon: "🍽️" },
+  { step: 2, title: "Select dishes", text: "Add meals to your cart and customize.", icon: "🛒" },
+  { step: 3, title: "Checkout", text: "Pick address and pay securely.", icon: "💳" },
+  { step: 4, title: "Enjoy delivery", text: "Track your courier in real time.", icon: "🛵" },
+];
+
+const FEATURES = [
+  { title: "Fresh Food",    text: "Daily fresh products from local suppliers.", icon: "/takoyaki.svg",      order: 1 },
+  { title: "Fast Delivery", text: "Average delivery time is 24 minutes across the city.", icon: "/fast delivery.svg", order: 2 },
+  { title: "Quality Food",  text: "Every restaurant undergoes a quality check.",   icon: "/award.svg",         order: 3 },
+  { title: "24/7 Service",  text: "Support and couriers are available 24/7.",    icon: "/smile.svg",         order: 4 },
 ];
 
 const TEAM = [
-  { name: "Nala Gilbert",   role: "Head of Operations", bio: "8 years in delivery logistics, building the courier network.", avatar: avatar("nala"),  facebook: "https://facebook.com", instagram: "https://instagram.com", order: 1 },
-  { name: "Emily James",    role: "Product Manager",    bio: "Responsible for the ordering experience from search to payment.", avatar: avatar("emily"), facebook: "https://facebook.com", instagram: "https://instagram.com", order: 2 },
-  { name: "David Anderson", role: "Head of Partnership",bio: "Onboarded over 400 partner restaurants.",              avatar: avatar("david"), facebook: "https://facebook.com", instagram: "https://instagram.com", order: 3 },
+  { name: "Nala Gilbert",   role: "Head of Operations",  avatar: avatar("nala"),  twitter: "https://twitter.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", order: 1 },
+  { name: "Emily James",    role: "Product Manager",     avatar: avatar("emily"), twitter: "https://twitter.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", order: 2 },
+  { name: "David Anderson", role: "Head of Partnership", avatar: avatar("david"), twitter: "https://twitter.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", order: 3 },
 ];
 
 const PARTNERS = [
-  { name: "Layers",    logo: "/partners/layers.svg",    order: 1 },
-  { name: "Sisyphus",  logo: "/partners/sisyphus.svg",  order: 2 },
-  { name: "Hourglass", logo: "/partners/hourglass.svg", order: 3 },
-  { name: "Command+R", logo: "/partners/command-r.svg", order: 4 },
+  { name: "Layers",    logo: "/partners/layers.svg" },
+  { name: "Sisyphus",  logo: "/partners/sisyphus.svg" },
+  { name: "Hourglass", logo: "/partners/hourglass.svg" },
+  { name: "Command+R", logo: "/partners/command-r.svg" },
 ];
 
 const TESTIMONIALS = [
-  { name: "Angeline Liu", role: "Food Vlogger", avatar: avatar("angeline"), rating: 4.9, order: 1, text: "I order weekly for shoots — delivery has never been late, the food arrives hot and perfectly packaged." },
-  { name: "Anne Marie",   role: "Career Woman", avatar: avatar("anne"),     rating: 4.8, order: 2, text: "My lunch break is 40 minutes, and MealMover always makes it in time. Promo codes also make it cheaper than the cafeteria." },
-  { name: "Marcus Dwi",   role: "Software Engineer", avatar: avatar("marcus"), rating: 5.0, order: 3, text: "Courier tracking on the map is what other services lacked. You can see every step of the order." },
-];
-
-const STATS = [
-  { value: "5K +", label: "Satisfied Customer", order: 1 },
-  { value: "15 +", label: "Awards Win",         order: 2 },
-  { value: "2 nd", label: "App of the Year",    order: 3 },
+  { name: "Angeline Liu", role: "Food Vlogger", avatar: avatar("angeline"), rating: 5, text: "I order weekly for shoots — delivery has never been late, the food arrives hot and perfectly packaged." },
+  { name: "Anne Marie",   role: "Career Woman", avatar: avatar("anne"),     rating: 4, text: "My lunch break is 40 minutes, and MealMover always makes it in time. Promo codes also make it cheaper than the cafeteria." },
+  { name: "Marcus Dwi",   role: "Software Engineer", avatar: avatar("marcus"), rating: 5, text: "Courier tracking on the map is what other services lacked. You can see every step of the order." },
 ];
 
 const FAQS = [
-  { tab: FaqTab.GENERAL, order: 1, question: "Do you charge per hour our per project rate?", answer: "MealMover does not charge an hourly rate. You pay for the order: the cost of dishes + a fixed delivery fee based on the distance to the restaurant." },
-  { tab: FaqTab.GENERAL, order: 2, question: "Can I have the plan for one package or any bundling?", answer: "Yes, the app features combo meals from restaurants and a MealMover+ subscription that provides free delivery for orders over $20." },
-  { tab: FaqTab.GENERAL, order: 3, question: "Can I consult first when I feel confused what should I choose?", answer: "Of course. The built-in AI assistant will select a dish based on your mood, budget, and dietary restrictions.\n\nIf you need a human — support is available 24/7 via chat and phone, with an average response time of under 2 minutes." },
-  { tab: FaqTab.GENERAL, order: 4, question: "Can I have any revision if the work unexpectedly?", answer: "If something goes wrong with your order — let us know within 30 minutes of delivery, and we will refund you or arrange a free replacement delivery." },
-
-  { tab: FaqTab.TRANSACTION, order: 1, question: "Where can I see my previous orders?", answer: "All orders are stored in the Transaction History section, complete with the receipt, delivery details, and a reorder button." },
-  { tab: FaqTab.TRANSACTION, order: 2, question: "Can I cancel an order after payment?", answer: "Yes, as long as the restaurant hasn't started preparing it. After the Preparing status, cancellations must be coordinated with support." },
-
-  { tab: FaqTab.PAYMENTS, order: 1, question: "Which payment methods are supported?", answer: "Credit Card (Stripe), cash to the courier, and PayPal. Card details are not stored on our servers." },
-  { tab: FaqTab.PAYMENTS, order: 2, question: "How do promo codes work?", answer: "Enter the code in the cart. The discount applies to the food total — delivery and service fees are not discounted." },
-
-  { tab: FaqTab.RETURNS, order: 1, question: "What if my food arrives cold or damaged?", answer: "Send a photo to the support chat within 30 minutes. Refunds to your card take 3-5 business days." },
-  { tab: FaqTab.RETURNS, order: 2, question: "Do you refund delivery costs?", answer: "Yes, if the delay exceeds 20 minutes from the promised time due to the service's fault." },
-
-  { tab: FaqTab.CAREERS, order: 1, question: "How can I become a courier?", answer: "Fill out the Join Courier form: you'll need documents, a vehicle, and a thermal bag. Verification takes up to 3 days." },
-  { tab: FaqTab.CAREERS, order: 2, question: "How do restaurants join MealMover?", answer: "Via the Join Merchant form. A manager will contact you within 24 hours, onboarding is free." },
+  { order: 1, question: "Do you charge per hour our per project rate?", answer: "MealMover does not charge an hourly rate. You pay for the order: the cost of dishes + a fixed delivery fee based on the distance to the restaurant." },
+  { order: 2, question: "Can I have the plan for one package or any bundling?", answer: "Yes, the app features combo meals from restaurants and a MealMover+ subscription that provides free delivery for orders over $20." },
+  { order: 3, question: "Can I consult first when I feel confused what should I choose?", answer: "Of course. The built-in AI assistant will select a dish based on your mood, budget, and dietary restrictions. If you need a human — support is available 24/7 via chat and phone, with an average response time of under 2 minutes." },
+  { order: 4, question: "Can I have any revision if the work unexpectedly?", answer: "If something goes wrong with your order — let us know within 30 minutes of delivery, and we will refund you or arrange a free replacement delivery." },
 ];
 
+// ── MISCELLANEOUS ──
 const PROMO_CODES = [
   { code: "FOODORI24",   description: "Promo applied successfully!", type: PromoType.FIXED,   value: 4,    minOrder: 15, usageLimit: 1000 },
   { code: "MEALMOVER10", description: "10% off your first order", type: PromoType.PERCENT, value: 10, minOrder: 20, maxDiscount: 8 },
@@ -382,7 +361,7 @@ async function main() {
   );
   const cityByName = new Map(cities.map((c) => [c.name, c.id]));
 
-  // 1b. Delivery locations (for the Sunset Road selector)
+  // 1b. Delivery locations
   console.log("📍 Delivery locations...");
   await prisma.deliveryLocation.createMany({ data: DELIVERY_LOCATIONS });
 
@@ -524,7 +503,6 @@ async function main() {
       },
     });
 
-    // slight price variation so restaurants aren't clones
     const priceShift = 1 + rIndex * 0.04;
 
     await prisma.menuItem.createMany({
@@ -569,7 +547,7 @@ async function main() {
     });
   }
 
-  // 10. Demo user orders (for Transaction History)
+  // 10. Demo user orders
   console.log("🧾 Orders...");
   const orderPlan: {
     number: string;
@@ -631,15 +609,15 @@ async function main() {
     });
   }
 
-  // 11. Site content
+  // 11. Site content (Оновлено!)
   console.log("📄 Section content...");
-  await prisma.feature.createMany({ data: FEATURES });
+  await prisma.stat.createMany({ data: STATS });
   await prisma.howItWorksStep.createMany({ data: HOW_IT_WORKS });
+  await prisma.feature.createMany({ data: FEATURES });
   await prisma.teamMember.createMany({ data: TEAM });
   await prisma.partner.createMany({ data: PARTNERS });
   await prisma.testimonial.createMany({ data: TESTIMONIALS });
   await prisma.faq.createMany({ data: FAQS });
-  await prisma.stat.createMany({ data: STATS });
 
   // 12. Demo newsletter subscribers
   await prisma.newsletterSubscriber.createMany({

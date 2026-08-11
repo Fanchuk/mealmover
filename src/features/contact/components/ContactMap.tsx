@@ -3,9 +3,10 @@
 import { ArrowUpRight } from "lucide-react";
 
 const CENTER = { lat: 40.6136, lng: -74.1502 };
-const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${CENTER.lat},${CENTER.lng}`;
-
-const EMBED_SRC = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9!2d${CENTER.lng}!3d${CENTER.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2451a7c84d0c9%3A0x0!2zNDDCsDM2JzQ5LjAiTiA3NMKwMDgnNTguMSJX!5e0!3m2!1sen!2sus!4v1700000000000`;
+const d = 0.01;
+const BBOX = `${CENTER.lng - d},${CENTER.lat - d},${CENTER.lng + d},${CENTER.lat + d}`;
+const EMBED_SRC = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&layer=mapnik&marker=${CENTER.lat},${CENTER.lng}`;
+const LARGE_MAP_URL = `https://www.openstreetmap.org/?mlat=${CENTER.lat}&mlon=${CENTER.lng}#map=15/${CENTER.lat}/${CENTER.lng}`;
 
 export function ContactMap() {
   return (
@@ -16,13 +17,14 @@ export function ContactMap() {
             src={EMBED_SRC}
             className="w-full h-full border-0"
             loading="lazy"
-            allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
+          
+          <div className="absolute top-0 left-0 w-[220px] h-[40px] bg-white/0 pointer-events-none" />
 
           <div className="absolute top-8 left-8 sm:top-10 sm:left-10 z-10">
             <a
-              href={GOOGLE_MAPS_URL}
+              href={LARGE_MAP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-white rounded-[50px] h-[48px] px-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] font-heading font-bold text-[14px] sm:text-[16px] text-[#EF5B5B] hover:shadow-md transition-shadow"

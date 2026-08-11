@@ -10,6 +10,7 @@ import { useCartStore } from "@/src/features/cart/store";
 import { AnimatedTotal } from "./AnimatedTotal";
 import { CartEmptyState } from "./CartEmptyState";
 import { PromoInputSection } from "./PromoInputSection";
+import { useSession } from "next-auth/react";
 import { CartRow } from "./CartRow";
 import { cn } from "@/src/lib/utils";
 
@@ -23,6 +24,8 @@ export function CartPanel() {
   const setNote = useCartStore((s) => s.setNote);
   const lineTotal = useCartStore((s) => s.lineTotal);
   const selectedSubtotal = useCartStore((s) => s.selectedSubtotal);
+
+  const { status } = useSession();
 
   const panelRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -174,14 +177,14 @@ export function CartPanel() {
                   </div>
                 </button>
                 <Link
-                  href="/checkout"
+                  href={status === "authenticated" ? "/checkout" : "/sign-in?callbackUrl=/checkout"}
                   onClick={() => setOpen(false)}
                   className={cn(
                     "rounded-[50px] h-[56px] px-8 flex items-center justify-center font-heading font-medium text-[16px] text-white uppercase tracking-wider transition-colors",
                     subtotal > 0 ? "bg-[#EF5B5B] hover:bg-[#CD424E]" : "bg-neutral-300 pointer-events-none"
                   )}
                 >
-                  Checkout
+                  {status === "authenticated" ? "Checkout" : "Sign in to checkout"}
                 </Link>
               </div>
             </div>

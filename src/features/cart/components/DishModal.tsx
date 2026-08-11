@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { SIZE_OPTIONS, ADDON_OPTIONS, DEFAULT_SIZE_ID } from '../data/modifiers'
+import { SIZE_OPTIONS, ADDON_OPTIONS, DEFAULT_SIZE_ID } from "../data/modifiers";
 import { useCartStore } from "../store";
 import { SizeCard } from "./SizeCard";
 import { AddonCard } from "./AddonCard";
@@ -80,7 +80,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 pt-28 sm:p-6 sm:pt-32"
         >
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -88,30 +88,29 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
             exit={{ opacity: 0, y: 40, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full sm:max-w-[520px] bg-white rounded-t-[28px] sm:rounded-[28px] max-h-[92vh] flex flex-col overflow-hidden"
+            className="w-full max-w-[520px] bg-white rounded-[28px] flex flex-col overflow-hidden shadow-2xl isolate"
+            style={{ maxHeight: "calc(100dvh - 160px)" }}
           >
-            {/* Header image */}
-            <div className="relative h-[180px] sm:h-[220px] flex-shrink-0">
+            <div className="relative w-full h-[180px] sm:h-[220px] flex-shrink-0 bg-neutral-100 rounded-t-[28px] overflow-hidden">
               <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors shadow-sm z-10"
               >
-                <X size={20} className="text-neutral-800" />
+                <X size={18} className="text-neutral-800" />
               </button>
             </div>
 
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-5">
-              <h3 className="font-heading font-bold text-[24px] text-neutral-800">{dish.name}</h3>
-              <p className="font-heading text-[15px] text-neutral-500 mt-1">{dish.desc}</p>
-              <p className="font-heading font-semibold text-[22px] text-[#EF5B5B] mt-2">${dish.basePrice.toFixed(2)}</p>
+            <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5">
+              <h3 className="font-heading font-bold text-[22px] sm:text-[24px] text-neutral-800 leading-tight">{dish.name}</h3>
+              <p className="font-heading text-[14px] sm:text-[15px] text-neutral-500 mt-1.5">{dish.desc}</p>
+              <p className="font-heading font-semibold text-[20px] sm:text-[22px] text-[#EF5B5B] mt-3">${dish.basePrice.toFixed(2)}</p>
 
               <div className="mt-6">
-                <p className="font-heading font-semibold text-[16px] text-neutral-800 mb-3">
+                <p className="font-heading font-semibold text-[15px] sm:text-[16px] text-neutral-800 mb-3">
                   Portion size <span className="text-neutral-400 font-normal text-[13px]">· pick one</span>
                 </p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   {SIZE_OPTIONS.map((opt) => (
                     <SizeCard key={opt.id} opt={opt} active={sizeId === opt.id} onClick={() => setSizeId(opt.id)} />
                   ))}
@@ -119,10 +118,10 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
               </div>
 
               <div className="mt-6">
-                <p className="font-heading font-semibold text-[16px] text-neutral-800 mb-3">
+                <p className="font-heading font-semibold text-[15px] sm:text-[16px] text-neutral-800 mb-3">
                   Add extras <span className="text-neutral-400 font-normal text-[13px]">· optional</span>
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                   {ADDON_OPTIONS.map((opt) => (
                     <AddonCard key={opt.id} opt={opt} active={addonIds.includes(opt.id)} onClick={() => toggleAddon(opt.id)} />
                   ))}
@@ -130,7 +129,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
               </div>
 
               <div className="mt-6">
-                <p className="font-heading font-semibold text-[16px] text-neutral-800 mb-2">Note</p>
+                <p className="font-heading font-semibold text-[15px] sm:text-[16px] text-neutral-800 mb-2">Note</p>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
@@ -140,26 +139,25 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex-shrink-0 border-t border-neutral-100 px-6 py-4 flex items-center gap-4">
-              <div className="flex items-center gap-3">
+            <div className="flex-shrink-0 border-t border-neutral-100 px-5 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-white rounded-b-[28px]">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="w-9 h-9 rounded-full border border-neutral-300 flex items-center justify-center hover:border-[#EF5B5B] transition-colors"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-neutral-300 flex items-center justify-center hover:border-[#EF5B5B] transition-colors"
                 >
                   <Minus size={16} />
                 </button>
                 <span className="font-heading font-semibold text-[18px] min-w-[20px] text-center">{qty}</span>
                 <button
                   onClick={() => setQty((q) => q + 1)}
-                  className="w-9 h-9 rounded-full bg-[#EF5B5B] flex items-center justify-center hover:bg-[#CD424E] transition-colors"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#EF5B5B] flex items-center justify-center hover:bg-[#CD424E] transition-colors"
                 >
                   <Plus size={16} className="text-white" />
                 </button>
               </div>
               <button
                 onClick={handleAdd}
-                className="flex-1 h-[52px] rounded-[50px] bg-[#EF5B5B] text-white font-heading font-medium text-[16px] hover:bg-[#CD424E] transition-colors flex items-center justify-center gap-2"
+                className="flex-1 h-[48px] sm:h-[52px] rounded-[50px] bg-[#EF5B5B] text-white font-heading font-medium text-[15px] sm:text-[16px] hover:bg-[#CD424E] transition-colors flex items-center justify-center gap-2"
               >
                 Add · ${total.toFixed(2)}
               </button>

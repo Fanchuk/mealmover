@@ -12,12 +12,15 @@ import { Spinner } from "@/src/components/Spinner";
 import { TITLE_WORDS, highlightMatch } from "../utils/heroUtils";
 import { useHeroAnimation } from "../hooks/useHeroAnimation";
 import { useDetectCity } from "../hooks/useDetectCity";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface SearchResult {
   id: string;
   name: string;
   image: string;
-  type: "meal" | "drink";
+  type: "meal" | "drink" | "restaurant";
+  restaurantName?: string;
+  slug?: string;
 }
 
 export function HeroSection() {
@@ -50,12 +53,28 @@ export function HeroSection() {
     router.push(`/restaurants?q=${encodeURIComponent(value.trim())}`);
   }
 
+  function goToItem(item: SearchResult) {
+    setShowDropdown(false);
+    if (item.type === "restaurant") {
+      router.push(`/restaurants/${item.slug}`);
+    } else if (item.slug) {
+      router.push(`/restaurants/${item.slug}?highlight=${encodeURIComponent(item.name)}&mealId=${item.id}`);
+    } else {
+      router.push(`/restaurants?q=${encodeURIComponent(item.name)}`);
+    }
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") goToSearch(query);
   }
 
   return (
-    <section ref={sectionRef} className="bg-white overflow-hidden">
+    <section ref={sectionRef} className="bg-white overflow-hidden relative">
+      <FloatingShapes positions={[
+        { top: "10%", left: "5%" },
+        { top: "60%", right: "8%" },
+        { top: "30%", left: "48%" },
+      ]} />
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-10 lg:py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
         <div className="flex flex-col gap-5 lg:gap-6 order-2 lg:order-1 relative">
           <div className="hero-fade inline-flex items-center gap-3 self-start border-2 border-[#FFCF27] bg-[#FFF6CC] rounded-[50px] pl-5 sm:pl-6 pr-1 py-1">
@@ -84,7 +103,7 @@ export function HeroSection() {
             back, relax, and await the arrival of your delicious meal.
           </p>
 
-          <div className="hero-fade w-full max-w-[551px]">
+          <div className="hero-fade w-full max-w-[551px] relative z-30">
             <div className="flex items-center gap-2 sm:gap-3 bg-neutral-100 border border-neutral-200 rounded-[50px] px-4 sm:px-6 py-3 sm:py-4 h-[60px] sm:h-[72px]">
               <Search size={20} className="text-neutral-500 flex-shrink-0" />
               <input
@@ -106,7 +125,7 @@ export function HeroSection() {
             </div>
 
             {dropdownVisible && (
-              <div className="mt-2 bg-white rounded-2xl shadow-xl border border-neutral-100 max-h-[320px] overflow-y-auto">
+              <div className="mt-2 bg-white rounded-2xl shadow-xl border border-neutral-100 max-h-[320px] overflow-y-auto absolute z-50 left-0 right-0">
                 {isFetching && (
                   <div className="p-4 flex items-center justify-center gap-2 text-neutral-400 font-heading text-sm">
                     <Spinner size={16} color="#a3a3a3" /> Searching...
@@ -118,13 +137,18 @@ export function HeroSection() {
                 {results.map((item) => (
                   <button
                     key={`${item.type}-${item.id}`}
-                    onMouseDown={() => goToSearch(item.name)}
+                    onMouseDown={() => goToItem(item)}
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 text-left"
                   >
                     <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                    <span className="font-heading text-[15px] text-neutral-800">
-                      {highlightMatch(item.name, debouncedQuery)}
-                    </span>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-heading text-[15px] text-neutral-800 truncate">
+                        {highlightMatch(item.name, debouncedQuery)}
+                      </span>
+                      {item.restaurantName && (
+                        <span className="font-heading text-[12px] text-neutral-400 truncate">{item.restaurantName}</span>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>

@@ -41,6 +41,8 @@ export async function getRestaurantsList(filters: RestaurantsFilters): Promise<R
   }));
 
   const sortedItems = sortAndFilterRestaurants(mappedItems, filters);
+  console.log("filters:", filters.sort, filters.lat, filters.lng);
+  console.log("lat/lng в ресторанах:", mappedItems.map(r => ({ name: r.name, lat: r.lat, lng: r.lng })));
 
   const totalCount = sortedItems.length;
   const start = (page - 1) * pageSize;

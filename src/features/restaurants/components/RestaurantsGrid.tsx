@@ -79,7 +79,7 @@ export function RestaurantsGrid({ initialItems, totalCount }: RestaurantsGridPro
   const hasActiveFilters = spString.length > 0;
 
   return (
-    <section ref={sectionRef} className="bg-white py-12 lg:py-20">
+    <section ref={sectionRef} id="restaurants-list" className="bg-white py-12 lg:py-20">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">
           Restaurants

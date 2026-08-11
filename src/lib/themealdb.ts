@@ -3,10 +3,10 @@ import {
     MealCategoriesResponseSchema,
     type Meal,
     type OfferCardData,
+    type MenuItemCardData,
  } from "./types/meals";
 
 const BASE = "https://www.themealdb.com/api/json/v1/1";
-
 
 export async function getMealsByCategory(category: string): Promise<Meal[]> {
   const res = await fetch(`${BASE}/filter.php?c=${encodeURIComponent(category)}`, {
@@ -35,7 +35,6 @@ export async function getMealCategories() {
   return parsed.success ? parsed.data.categories : [];
 }
 
-
 const PRICE_BY_CATEGORY: Record<string, number> = {
   Seafood: 14.5,
   Chicken: 11.0,
@@ -49,7 +48,7 @@ const PRICE_BY_CATEGORY: Record<string, number> = {
   Miscellaneous: 10.02,
 };
 
-function calcPrices(category: string | null, index: number) {
+function calcPrices(category: string | null | undefined, index: number) {
   const base = PRICE_BY_CATEGORY[category ?? ""] ?? 10.02;
   const price = Math.round((base + index * 0.3) * 100) / 100;
   const oldPrice = Math.round(price * 3.2 * 100) / 100;
@@ -80,4 +79,12 @@ export function mealToMenuItemCard(meal: Meal, index = 0): MenuItemCardData {
     oldPrice,
     discount,
   };
+}
+
+export async function getMealById(id: string): Promise<Meal | null> {
+  const res = await fetch(`${BASE}/lookup.php?i=${id}`, {
+    next: { revalidate: 3600 },
+  });
+  const json = await res.json();
+  return json.meals?.[0] ?? null;
 }

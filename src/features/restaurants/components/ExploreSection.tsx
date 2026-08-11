@@ -16,14 +16,28 @@ const CATEGORIES = [
 ];
 
 export function ExploreSection() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const active = searchParams.get('category')
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const active = searchParams.get('category');
 
-    const [locating, setLocating] = useState(false)
+  const [locating, setLocating] = useState(false);
 
-    function selectCategory(id: string) {
+  function selectCategory(id: string) {
     if (id === "near") {
+      if (active === "near") {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("category");
+        params.delete("sort");
+        params.delete("lat");
+        params.delete("lng");
+        router.push(`/restaurants?${params.toString()}`, { scroll: false });
+        
+        setTimeout(() => {
+          document.getElementById("restaurants-list")?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+        return;
+      }
+
       if (!navigator.geolocation) {
         Swal.fire({
           icon: "error",
@@ -44,7 +58,11 @@ export function ExploreSection() {
           params.set("sort", "distance");
           params.set("lat", String(pos.coords.latitude));
           params.set("lng", String(pos.coords.longitude));
-          router.push(`/restaurants?${params.toString()}`);
+          router.push(`/restaurants?${params.toString()}`, { scroll: false });
+          
+          setTimeout(() => {
+            document.getElementById("restaurants-list")?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
         },
         (error) => {
           setLocating(false);
@@ -59,16 +77,20 @@ export function ExploreSection() {
       return;
     }
 
-    const params = new URLSearchParams(searchParams.toString())
-
+    const params = new URLSearchParams(searchParams.toString());
+    
     if (active === id) {
-        params.delete('category')
+      params.delete('category');
     } else {
-        params.set('category', id)
+      params.set('category', id);
     }
 
-    router.push(`/restaurants?${params.toString()}`)
-}
+    router.push(`/restaurants?${params.toString()}`, { scroll: false });
+    
+    setTimeout(() => {
+      document.getElementById("restaurants-list")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }
 
   return (
     <section className="bg-white py-12 lg:py-20 overflow-hidden">

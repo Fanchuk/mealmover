@@ -1,38 +1,87 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { TransactionList } from "@/src/features/transactions/components/TransactionList";
-import { OrderDetail } from "@/src/features/transactions/components/OrderDetail";
+import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
+import { cn } from "@/src/lib/utils";
+import { OrderListItem } from "../types";
+import { Tab } from "../queries";
+import { OrderList } from "./OrderList";
+import { OrderDetailPanel } from "./OrderDetailPanel";
+import { EmptyState } from "./EmptyState";
 
-export function TransactionsContent() {
-  const [selected, setSelected] = useState(1);
+const TABS: { id: Tab; label: string }[] = [
+  { id: "ongoing", label: "Ongoing" },
+  { id: "history", label: "History" },
+  { id: "draft", label: "Draft" },
+];
+
+interface Props {
+  tab: Tab;
+  orders: OrderListItem[];
+  selectedId?: string;
+}
+
+export function TransactionsContent({ tab, orders, selectedId }: Props) {
+  const router = useRouter();
+  const selected = orders.find((o) => o.id === selectedId) ?? orders[0];
+
+  function switchTab(next: Tab) {
+    router.push(`/transactions?tab=${next}`, { scroll: false });
+  }
+
+  function selectOrder(id: string) {
+    router.push(`/transactions?tab=${tab}&order=${id}`, { scroll: false });
+  }
 
   return (
-    <section className="bg-white py-8 lg:py-14">
+    <section className="bg-white py-8 lg:py-12 min-h-[70vh]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-        <nav className="flex items-center gap-2 font-heading text-[14px] sm:text-[16px] mb-6">
-          <Link href="/" className="text-neutral-400 hover:text-[#EF5B5B] transition-colors">Home</Link>
-          <ChevronRight size={16} className="text-neutral-400" />
-          <span className="text-[#FFCF27] font-medium">Transaction</span>
-        </nav>
-
-        <h1 className="font-heading font-semibold text-[38px] sm:text-[49px] leading-[124%] tracking-[0.01em] text-neutral-800 mb-8 lg:mb-10">
-          Transaction History
+        <h1 className="font-heading font-bold text-[32px] sm:text-[42px] text-neutral-800 mb-6">
+          My Orders
         </h1>
 
-        <div className="w-full border-t border-dashed border-neutral-300 mb-8 lg:mb-10" />
-
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
-          <div className="w-full lg:w-[516px] flex-shrink-0">
-            <TransactionList selected={selected} onSelect={setSelected} />
-          </div>
-
-          <div className="w-full flex-1">
-            <OrderDetail />
-          </div>
+        <div className="flex gap-2 border-b border-neutral-200 mb-8">
+          {TABS.map((t) => {
+            const isActive = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => switchTab(t.id)}
+                className={cn(
+                  "relative px-5 py-3 font-heading font-medium text-[16px] transition-colors",
+                  isActive ? "text-[#EF5B5B]" : "text-neutral-500 hover:text-neutral-800"
+                )}
+              >
+                {t.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="tab-underline"
+                    className="absolute left-0 right-0 -bottom-px h-[3px] rounded-full bg-[#EF5B5B]"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
+
+        {orders.length === 0 ? (
+          <EmptyState tab={tab} />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
+            <OrderList orders={orders} selectedId={selected?.id} onSelect={selectOrder} />
+
+            <div className="hidden lg:block">
+              {selected && <OrderDetailPanel order={selected} />}
+            </div>
+
+            {selectedId && (
+              <div className="lg:hidden">
+                {selected && <OrderDetailPanel order={selected} />}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

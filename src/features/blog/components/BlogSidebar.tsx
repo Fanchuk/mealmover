@@ -1,103 +1,114 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/src/lib/utils";
-import { ChevronDown } from "lucide-react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import type { BlogPost } from "@/src/features/blog/types";
+import { AnimatePresence, motion } from "motion/react";
+import toast from "react-hot-toast";
+import type { BlogPost } from "../services/blogApi";
+import { subscribeNewsletter, type NewsletterState } from "../services/newsletterAction";
 
 const CONTACTS = [
-  { icon: "/WhatsApp.svg", alt: "WhatsApp" },
-  { icon: "/Facebook.svg", alt: "Facebook" },
-  { icon: "/Instagram.svg", alt: "Instagram" },
-  { icon: "/phone.svg", alt: "Phone" },
-  { icon: "/email.svg", alt: "Email" },
+  { icon: "/WhatsApp.svg", alt: "WhatsApp", href: "#" },
+  { icon: "/Facebook.svg", alt: "Facebook", href: "#" },
+  { icon: "/Instagram.svg", alt: "Instagram", href: "#" },
+  { icon: "/phone.svg", alt: "Phone", href: "#" },
+  { icon: "/email.svg", alt: "Email", href: "#" },
 ];
 
+export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[]; tags: string[]; activeTag: string }) {
+  const [state, formAction, pending] = useActionState(subscribeNewsletter, { ok: false } as NewsletterState);
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
-interface Props {
-  popular: BlogPost[];
-  tags: string[];
-  gallery: string[]
-}
+  useEffect(() => {
+    if (state.ok) toast.success("Subscribed! Check your inbox.");
+    else if (state.error) toast.error(state.error);
+  }, [state]);
 
-export function BlogSidebar({ popular, tags, gallery }: Props) {
-  const [showAll, setShowAll] = useState(false);
-  const visible = showAll ? popular : popular.slice(0, 4);
+  const gallery = [11, 22, 33, 44, 55, 66];
 
   return (
-      <aside className="w-full lg:w-[433px] flex-shrink-0 flex flex-col gap-6 lg:gap-8">
-          <img src="/Mask group (10).png" alt="Download Our Mobile App" className="w-full rounded-[20px]" />
-
-          <div className="border border-neutral-300 rounded-[30px] p-6 lg:p-8">
-              <h3 className="font-heading font-bold text-[25px] tracking-[0.02em] text-[#EF5B5B] mb-6">Popular Post</h3>
-              <div className="flex flex-col gap-5">
-                  {visible.map((p) => (
-                      <Link key={p.id} href={`/blog/${p.id}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity">
-                          <img src={p.image} alt="" className="w-[80px] h-[80px] lg:w-[90px] lg:h-[90px] rounded-[16px] object-cover flex-shrink-0" />
-                          <div>
-                              <p className="font-heading font-medium text-[18px] lg:text-[20px] leading-[150%] tracking-[0.02em] text-[#313131] line-clamp-2">{p.title}</p>
-                              <p className="font-heading font-medium text-[16px] tracking-[0.02em] text-[#EF5B5B]">{p.createdAt}</p>
-                              <p className="font-heading font-normal text-[16px] leading-[163%] tracking-[0.02em] text-neutral-500">{p.authorName}</p>
-                          </div>
-                      </Link>
-                  ))}
+    <aside className="flex flex-col gap-8">
+      <div>
+        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Popular Posts</h3>
+        <div className="flex flex-col gap-4">
+          {popular.map((p) => (
+            <Link key={p.id} href={`/blog/${p.id}`} className="flex gap-3 group">
+              <img src={p.image} alt="" className="w-[70px] h-[70px] rounded-[14px] object-cover flex-shrink-0" />
+              <div className="min-w-0">
+                <h4 className="font-heading font-semibold text-[15px] text-neutral-800 line-clamp-2 group-hover:text-[#EF5B5B] transition-colors">{p.title}</h4>
+                <span className="font-heading text-[13px] text-neutral-400">{p.views ?? 0} views</span>
               </div>
-              {popular.length > 4 && (
-                  <button
-                      onClick={() => setShowAll((v) => !v)}
-                      className="mt-6 w-full border border-neutral-300 rounded-[50px] h-[61px] flex items-center justify-center gap-2 font-heading font-medium text-[20px] text-[#EF5B5B] hover:border-[#EF5B5B] transition-colors">
-                      {showAll ? 'Show Less' : 'See More Posts'} <ChevronDown size={18} className={cn('transition-transform', showAll && 'rotate-180')} />
-                  </button>
-              )}
-          </div>
+            </Link>
+          ))}
+        </div>
+      </div>
 
-          <div className="border border-neutral-300 rounded-[30px] p-6 lg:p-8">
-              <h3 className="font-heading font-bold text-[25px] tracking-[0.02em] text-[#EF5B5B]">Newsletter</h3>
-              <p className="font-heading font-normal text-[20px] leading-[150%] tracking-[0.02em] text-neutral-600 mt-3">Don&apos;t miss a thing! Sign up to recieve daily deals</p>
-              <input
-                  type="email"
-                  placeholder="Enter your Email"
-                  className="mt-6 w-full bg-neutral-100 border border-[#e1e1e1] rounded-[50px] h-[56px] px-6 outline-none font-heading font-normal text-[16px] text-neutral-800 placeholder:text-neutral-500"
-              />
-              <button className="mt-4 w-full bg-[#EF5B5B] hover:bg-[#CD424E] transition-colors rounded-[50px] h-[61px] font-heading font-medium text-[20px] text-white">Subscribe</button>
-          </div>
+      <div className="rounded-[20px] bg-[#EF5B5B] p-6 text-white">
+        <h3 className="font-heading font-bold text-[20px]">Newsletter</h3>
+        <p className="font-heading text-[14px] text-white/80 mt-1 mb-4">Get the latest recipes in your inbox.</p>
+        <form action={formAction} className="flex flex-col gap-3">
+          <input name="email" type="email" required placeholder="Your email" className="w-full h-[46px] rounded-[12px] px-4 font-heading text-[14px] text-neutral-800 outline-none" />
+          <button type="submit" disabled={pending} className="h-[46px] rounded-[12px] bg-white text-[#EF5B5B] font-heading font-semibold hover:bg-neutral-100 transition-colors disabled:opacity-70">
+            {pending ? "Subscribing..." : "Subscribe"}
+          </button>
+        </form>
+      </div>
 
-          <div className="border border-[#e1e1e1] rounded-[30px] p-6 lg:p-8">
-              <h3 className="font-heading font-bold text-[25px] tracking-[0.02em] text-[#EF5B5B] mb-6">Contact Us</h3>
-              <div className="flex flex-wrap gap-3">
-                  {CONTACTS.map((c, i) => (
-                      <button key={i} className="w-[60px] h-[60px] rounded-full bg-neutral-200 flex items-center justify-center hover:bg-neutral-300 transition-colors">
-                          <img src={c.icon} alt={c.alt} className="w-6 h-6 object-contain" />
-                      </button>
-                  ))}
-              </div>
-          </div>
+      <div>
+        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Popular Tags</h3>
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <Link
+              key={tag}
+              href={`/blog?tag=${tag}`}
+              className={`font-heading text-[13px] rounded-full px-3 py-1.5 transition-colors ${activeTag === tag ? "bg-[#EF5B5B] text-white" : "bg-neutral-100 text-neutral-600 hover:bg-[#EF5B5B]/10 hover:text-[#EF5B5B]"}`}
+            >
+              #{tag}
+            </Link>
+          ))}
+        </div>
+      </div>
 
-          <div className="border border-[#e1e1e1] rounded-[30px] p-6 lg:p-8">
-              <h3 className="font-heading font-bold text-[25px] tracking-[0.02em] text-[#EF5B5B] mb-6">Popular Tags</h3>
-              <div className="flex flex-wrap gap-3">
-                  {tags.map((tag, i) => (
-                      <button
-                          key={tag}
-                          className={cn(
-                              'rounded-[50px] h-[40px] px-6 font-heading font-medium text-[16px] transition-colors capitalize',
-                              i === 0 ? 'bg-[#EF5B5B] border-2 border-[#CD424E] text-white' : 'border border-neutral-300 text-[#EF5B5B] hover:border-[#EF5B5B]',
-                          )}>
-                          {tag}
-                      </button>
-                  ))}
-              </div>
-          </div>
+      <div>
+        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Follow us</h3>
+        <div className="flex gap-3">
+          {CONTACTS.map((c) => (
+            <a key={c.alt} href={c.href} className="w-11 h-11 rounded-full bg-neutral-100 flex items-center justify-center hover:bg-[#EF5B5B]/10 transition-colors">
+              <img src={c.icon} alt={c.alt} className="w-5 h-5 object-contain" />
+            </a>
+          ))}
+        </div>
+      </div>
 
-          <div className="border border-[#e1e1e1] rounded-[30px] p-6 lg:p-8">
-              <h3 className="font-heading font-bold text-[25px] tracking-[0.02em] text-[#EF5B5B] mb-6">Gallery</h3>
-              <div className="grid grid-cols-3 gap-3">
-                  {gallery.map((img, i) => (
-                      <img key={i} src={img} alt="" className="w-full aspect-square rounded-[16px] object-cover" />
-                  ))}
-              </div>
-          </div>
-      </aside>
-  )
+      <div>
+        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Gallery</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {gallery.map((seed) => {
+            const url = `https://picsum.photos/seed/${seed}/300/300`;
+            return (
+              <button key={seed} onClick={() => setLightbox(url)} className="aspect-square rounded-[12px] overflow-hidden group">
+                <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+            className="fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-4"
+          >
+            <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 text-white text-3xl leading-none">&times;</button>
+            <motion.img
+              initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
+              src={lightbox.replace("300/300", "800/800")} alt="" className="max-w-full max-h-full rounded-[20px]"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </aside>
+  );
 }

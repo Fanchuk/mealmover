@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import { X } from "lucide-react";
+
 const STEPS = [
   { illo: "/Layer_20.svg",          title: "Online Order with Our Platform" },
   { illo: "/Group.svg",             title: "The Chef will Cook Your Food" },
@@ -6,8 +11,10 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
+  const [videoOpen, setVideoOpen] = useState(false);
+
   return (
-    <section className="bg-white py-12 lg:py-20">
+    <section className="bg-white py-12 lg:py-20 relative">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">How It Works</span>
         <h2 className="font-heading font-bold text-[32px] sm:text-[48px] lg:text-[61px] leading-[123%] tracking-[0.01em] text-neutral-800 text-center mt-2 mb-12 lg:mb-16">
@@ -28,11 +35,31 @@ export function HowItWorks() {
           ))}
         </div>
 
-        <button className="mt-12 lg:mt-16 flex items-center gap-3 bg-[#EF5B5B] hover:bg-[#CD424E] transition-colors rounded-[50px] h-[56px] pl-8 pr-2 font-heading font-medium text-[16px] tracking-wider text-white uppercase">
+        <button 
+          onClick={() => setVideoOpen(true)} 
+          className="mt-12 lg:mt-16 flex items-center gap-3 bg-[#EF5B5B] hover:bg-[#CD424E] transition-colors rounded-[50px] h-[56px] pl-8 pr-2 font-heading font-medium text-[16px] tracking-wider text-white uppercase"
+        >
           Learn How to Order
           <img src="/play-circle.svg" alt="Play" className="w-10 h-10 object-contain" />
         </button>
       </div>
+
+      {videoOpen && (
+        <div onClick={() => setVideoOpen(false)} className="fixed inset-0 z-[80] bg-black/70 flex items-center justify-center p-4">
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-[860px] aspect-video rounded-[20px] overflow-hidden relative bg-black">
+            <button onClick={() => setVideoOpen(false)} className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors">
+              <X size={20} />
+            </button>
+            <iframe
+              src="https://www.youtube.com/embed/ZJy1ajvMU1k?autoplay=1"
+              title="How to order"
+              className="w-full h-full"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

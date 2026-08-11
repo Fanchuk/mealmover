@@ -2,29 +2,20 @@
 
 import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion } from 'motion/react'
-import { ChevronLeft, ChevronRight, Heart, Clock, Home, Star } from "lucide-react";
+import { motion } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { useCartStore } from "../../cart/store";
 import { useFavoritesStore } from "@/src/store/useFavoriteStore";
+import { MealCard, type PopularItem } from "./MealCard";
+import { DishModal } from "@/src/features/cart/components/DishModal";
+import { ClearCartDialog } from "@/src/features/cart/components/ClearCartDialog";
+import { useAddGuard } from "@/src/features/cart/hooks/useAddGuard";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
   icon: string;
-}
-
-interface PopularItem {
-  id: string;
-  name: string;
-  price: number;
-  prepTimeMin: number;
-  rating: number;
-  image: string;
-  categorySlug: string;
-  restaurantName: string;
-  distanceKm: number;
 }
 
 interface Props {
@@ -34,21 +25,22 @@ interface Props {
 
 export function FoodCategoriesSection({ categories, popularItems }: Props) {
   const [active, setActive] = useState(categories[0]?.slug ?? "");
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true, 
+  const [modalDish, setModalDish] = useState<PopularItem | null>(null);
+  const { guard, pending, confirm, cancel } = useAddGuard();
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
     align: "start",
     containScroll: false,
   });
 
-  const addItem = useCartStore((s) => s.addItem)
-  const setCartOpen = useCartStore((s) => s.setOpen)
-  const isFavorite = useFavoritesStore((s) => s.isFavorite)
-  const toggleFavorite = useFavoritesStore((s) => s.toggle)
+  const isFavorite = useFavoritesStore((s) => s.isFavorite);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
 
   useEffect(() => {
     if (!emblaApi) return;
     const interval = setInterval(() => {
-        emblaApi.scrollNext();
+      emblaApi.scrollNext();
     }, 5000);
     return () => clearInterval(interval);
   }, [emblaApi]);
@@ -61,11 +53,6 @@ export function FoodCategoriesSection({ categories, popularItems }: Props) {
   function handleTabChange(slug: string) {
     setActive(slug);
     emblaApi?.scrollTo(0);
-  }
-
-  function handleAddToCart(item: PopularItem) {
-    addItem({ id: item.id, name: item.name, price: item.price, image: item.image })
-    setCartOpen(true)
   }
 
   return (
@@ -138,54 +125,12 @@ export function FoodCategoriesSection({ categories, popularItems }: Props) {
             <div className="flex -ml-4 lg:-ml-6">
               {filtered.length > 0 ? filtered.map((meal) => (
                 <div key={meal.id} className="flex-[0_0_300px] sm:flex-[0_0_360px] min-w-0 pl-4 lg:pl-6">
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="bg-white rounded-[20px] shadow-[0_16px_40px_0_rgba(0,0,0,0.07)] overflow-hidden h-full flex flex-col"
-                  >
-                    <div className="relative h-[280px] sm:h-[320px] flex-shrink-0">
-                      <img src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => toggleFavorite(meal.id)}
-                        className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#EF5B5B] shadow-md"
-                      >
-                        <Heart size={16} className={cn(isFavorite(meal.id) && "fill-current")} />
-                      </button>
-                    </div>
-                    <div className="p-5 flex-1 flex flex-col">
-                      <h3 className="font-heading font-medium text-[20px] sm:text-[25px] leading-[140%] tracking-[0.02em] text-neutral-800 mb-3">
-                        {meal.name}
-                      </h3>
-                      <div className="flex items-center justify-between mb-4">
-                        <p className="font-heading font-bold text-[24px] sm:text-[28px] text-[#EF5B5B]">
-                          ${meal.price.toFixed(2)}
-                        </p>
-                        <div className="flex items-center gap-1.5">
-                          <Clock size={14} className="text-[#EF5B5B]" />
-                          <span className="font-heading font-light text-[14px] text-neutral-600 whitespace-nowrap">
-                            {meal.prepTimeMin} min · {meal.distanceKm} km
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between pt-4 border-t border-neutral-100 mt-auto mb-4">
-                        <div className="flex items-center gap-1.5">
-                          <Home size={14} className="text-[#EF5B5B]" />
-                          <span className="font-heading font-light text-[14px] text-neutral-600">{meal.restaurantName}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star size={14} className="text-[#FFCF27] fill-[#FFCF27]" />
-                          <span className="font-heading font-medium text-[14px] text-[#EF5B5B]">{meal.rating}</span>
-                          <span className="font-heading font-light text-[14px] text-neutral-600">/ 5.0</span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(meal)}
-                        className="w-full h-[44px] rounded-[50px] bg-[#EF5B5B] text-white font-heading font-medium text-[16px] hover:bg-[#CD424E] transition-colors"
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </motion.div>
+                  <MealCard
+                    meal={meal}
+                    isFavorite={isFavorite}
+                    toggleFavorite={toggleFavorite}
+                    onOpenModal={() => setModalDish(meal)}
+                  />
                 </div>
               )) : (
                 <div className="flex items-center justify-center w-full text-neutral-400 font-heading text-[18px] py-20 ml-4 lg:ml-6">
@@ -196,6 +141,32 @@ export function FoodCategoriesSection({ categories, popularItems }: Props) {
           </div>
         </div>
       </div>
+
+      <DishModal
+        open={!!modalDish}
+        dish={
+          modalDish
+            ? {
+                id: modalDish.id,
+                name: modalDish.name,
+                desc: modalDish.desc ?? "",
+                image: modalDish.image,
+                basePrice: modalDish.price,
+                restaurantId: modalDish.restaurantId ?? "mealmover-kitchen",
+                restaurantName: modalDish.restaurantName,
+              }
+            : null
+        }
+        onClose={() => setModalDish(null)}
+        onBeforeAdd={(rid, add) => guard(rid, modalDish?.restaurantName ?? "", add)}
+      />
+
+      <ClearCartDialog
+        open={!!pending}
+        restaurantName={pending?.restaurantName ?? ""}
+        onConfirm={confirm}
+        onCancel={cancel}
+      />
     </section>
   );
 }

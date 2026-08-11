@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const TAB_MAP: Record<string, string> = {
   GENERAL: "General",
@@ -28,7 +29,7 @@ export function FaqSection({ faqs }: { faqs: Faq[] }) {
     const filtered = faqs.filter((f) => f.tab === activeTab)
 
   return (
-    <section className="bg-white py-12 lg:py-20">
+    <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col lg:flex-row gap-8 lg:gap-16">
         <div className="flex-shrink-0 lg:w-[280px]">
           <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase">FAQ's</span>
@@ -47,9 +48,11 @@ export function FaqSection({ faqs }: { faqs: Faq[] }) {
           </div>
         </div>
 
-        <div className="flex-1 lg:pt-[120px] relative">
-          <Image src="/Rectangle 234 (1).svg" alt="" width={12} height={12} className="absolute top-[20px] left-[5%] hidden lg:block" />
-          <Image src="/Rectangle 227 (1).svg" alt="" width={12} height={12} className="absolute top-[-20px] left-[30%] hidden lg:block" />
+        <div className="flex-1 lg:pt-[120px] relative z-20">
+          <FloatingShapes positions={[
+            { top: "20px", left: "5%" },
+            { top: "-20px", left: "30%" },
+          ]} />
           <div className="flex flex-col divide-y divide-neutral-200">
             {filtered.map((faq, i) => (
               <div key={faq.id} className="py-5 lg:py-6">
@@ -57,9 +60,21 @@ export function FaqSection({ faqs }: { faqs: Faq[] }) {
                   <span className="font-heading font-normal text-[18px] sm:text-[24px] leading-[150%] text-neutral-800">{faq.question}</span>
                   {openIdx === i ? <X size={20} className="text-[#EF5B5B] flex-shrink-0" /> : <Plus size={20} className="text-[#EF5B5B] flex-shrink-0" />}
                 </button>
-                {openIdx === i && (
-                  <div className="mt-4 font-heading font-light text-[15px] lg:text-[16px] leading-[150%] text-neutral-700 whitespace-pre-line">{faq.answer}</div>
-                )}
+                <AnimatePresence>
+                  {openIdx === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4 font-heading font-light text-[15px] lg:text-[16px] leading-[150%] text-neutral-700 whitespace-pre-line">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
           </div>

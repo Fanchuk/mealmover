@@ -32,7 +32,7 @@ return (
       <div className="-mt-24 lg:-mt-28">
         <ScrollReveal><PromoBanner restaurant={featured} /></ScrollReveal>
         <ScrollReveal><ExploreSection /></ScrollReveal>
-        <ScrollReveal><RestaurantsGrid initialItems={items} totalCount={totalCount} /></ScrollReveal>
+        <ScrollReveal><RestaurantsGrid key={JSON.stringify(sp)} initialItems={items} totalCount={totalCount} /></ScrollReveal>
         <ScrollReveal><DownloadAppSection /></ScrollReveal>
       </div>
     </div>

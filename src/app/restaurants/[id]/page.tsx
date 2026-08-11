@@ -5,7 +5,7 @@ import { MenuSection } from "@/src/features/restaurants/components/MenuSection";
 import { CustomerReviews } from "@/src/features/restaurants/components/CustomerReviews";
 import { LocationMap } from "@/src/features/restaurants/components/LocationMap";
 import { DetailShell } from "@/src/features/restaurants/components/DetailShell";
-import { getMealsByCategory, mealToOfferCard, mealToMenuItemCard } from "@/src/lib/themealdb";
+import { getMealsByCategory, mealToOfferCard, mealToMenuItemCard, getMealById } from "@/src/lib/themealdb";
 import { getCocktailsByCategory, cocktailToMenuItemCard } from "@/src/lib/thecocktaildb";
 import { getRestaurantBySlug, getReviewsByRestaurant, getReviewStatsByRestaurant, getDeliveryLocations } from "@/src/features/restaurants/services/restaurantDetails";
 import { canUserReview } from "@/src/features/restaurants/services/reviewActions";
@@ -13,8 +13,17 @@ import { RESTAURANT_MENU_MAP } from "@/src/features/restaurants/menu-map";
 import { mapReview } from "@/src/lib/mapReview";
 import { FloatingDots } from "@/src/components/ui/FloatingDots";
 
-export default async function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export const dynamic = "force-dynamic";
+
+export default async function RestaurantDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ mealId?: string; highlight?: string }>;
+}) {
   const { id } = await params;
+  const sp = await searchParams;
 
   const [restaurant, config] = await Promise.all([
     getRestaurantBySlug(id),
@@ -38,8 +47,18 @@ export default async function RestaurantDetailPage({ params }: { params: Promise
   ]);
 
   const todaysOffers = [...cat1, ...cat2].slice(0, 8).map(mealToOfferCard);
-  const mainCourse = mainCat.slice(0, 4).map(mealToMenuItemCard);
+  let mainCourse = mainCat.slice(0, 4).map(mealToMenuItemCard);
   const drinksDesserts = drinks.slice(0, 4).map(cocktailToMenuItemCard);
+
+  if (sp.mealId) {
+    const alreadyIn = mainCourse.some((m) => m.id === sp.mealId);
+    if (!alreadyIn) {
+      const highlighted = await getMealById(sp.mealId);
+      if (highlighted) {
+        mainCourse = [mealToMenuItemCard(highlighted), ...mainCourse.slice(0, 3)];
+      }
+    }
+  }
 
   return (
     <div className="relative overflow-hidden">
@@ -74,8 +93,4 @@ export default async function RestaurantDetailPage({ params }: { params: Promise
       </div>
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  return Object.keys(RESTAURANT_MENU_MAP).map((slug) => ({ id: slug }));
 }

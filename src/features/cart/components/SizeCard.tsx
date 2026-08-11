@@ -8,6 +8,12 @@ interface SizeCardProps {
 }
 
 export function SizeCard({ opt, active, onClick }: SizeCardProps) {
+  const EMOJI: Record<string, string> = {
+    "size-s": "🥙",
+    "size-m": "🍽️",
+    "size-l": "🍱",
+  };
+
   return (
     <button
       onClick={onClick}
@@ -16,7 +22,7 @@ export function SizeCard({ opt, active, onClick }: SizeCardProps) {
         active ? "border-[#EF5B5B] bg-[#EF5B5B]/5" : "border-neutral-200 hover:border-[#EF5B5B]/50"
       )}
     >
-      <img src={opt.image} alt={opt.name} className="w-10 h-10 object-contain" />
+      <span className="text-[32px]">{EMOJI[opt.id] ?? "🍽️"}</span>
       <span className="font-heading font-medium text-[14px] text-neutral-800">{opt.name}</span>
       <span className="font-heading text-[12px] text-neutral-400">
         {opt.price > 0 ? `+$${opt.price.toFixed(2)}` : "Free"}

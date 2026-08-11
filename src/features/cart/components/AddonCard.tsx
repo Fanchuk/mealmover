@@ -9,6 +9,17 @@ interface AddonCardProps {
 }
 
 export function AddonCard({ opt, active, onClick }: AddonCardProps) {
+  const EMOJI: Record<string, string> = {
+    "add-cheese": "🧀",
+    "add-egg": "🍳",
+    "add-sauce-bbq": "🫙",
+    "add-sauce-chili": "🌶️",
+    "add-salad": "🥗",
+    "add-rice": "🍚",
+    "add-fries": "🍟",
+    "add-avocado": "🥑",
+  };
+
   return (
     <button
       onClick={onClick}
@@ -22,7 +33,7 @@ export function AddonCard({ opt, active, onClick }: AddonCardProps) {
           <Check size={12} className="text-white" />
         </span>
       )}
-      <img src={opt.image} alt={opt.name} className="w-10 h-10 object-contain" />
+      <span className="text-[32px]">{EMOJI[opt.id] ?? "🍴"}</span>
       <span className="font-heading font-medium text-[13px] text-neutral-800 text-center leading-tight">{opt.name}</span>
       <span className="font-heading text-[12px] text-neutral-400">+${opt.price.toFixed(2)}</span>
     </button>
