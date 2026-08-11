@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import type { PostDetail } from "../services/postDetailApi";
 import { CommentSection } from "./CommentSection";
 import { BlogComment } from "@prisma/client";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface Props {
   post: PostDetail;
@@ -47,8 +48,14 @@ export function BlogDetailContent({ post, prevId, nextId, related, comments }: P
     <>
       <motion.div style={{ scaleX: progress }} className="fixed top-0 left-0 right-0 h-1 bg-[#EF5B5B] origin-left z-[60]" />
 
-      <article className="bg-white py-8 lg:py-12">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+      <article className="bg-white py-8 lg:py-12 relative overflow-hidden">
+        <FloatingShapes positions={[
+          { top: "5%", right: "2%" },
+          { top: "40%", left: "1%" },
+          { top: "75%", right: "3%" },
+          { top: "90%", left: "2%" },
+        ]} />
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
           <Link href="/blog" className="inline-flex items-center gap-2 text-neutral-500 hover:text-[#EF5B5B] font-heading text-[15px] mb-6 transition-colors">
             <ChevronLeft size={18} /> Back to blog
           </Link>

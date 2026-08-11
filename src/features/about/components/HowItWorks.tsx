@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const STEPS = [
   { illo: "/Layer_20.svg",          title: "Online Order with Our Platform" },
@@ -14,8 +15,14 @@ export function HowItWorks() {
   const [videoOpen, setVideoOpen] = useState(false);
 
   return (
-    <section className="bg-white py-12 lg:py-20 relative">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center">
+    <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "5%", left: "2%" },
+        { top: "50%", right: "2%" },
+        { top: "88%", left: "4%" },
+        { top: "20%", right: "5%" },
+      ]} />
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center relative z-10">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">How It Works</span>
         <h2 className="font-heading font-bold text-[32px] sm:text-[48px] lg:text-[61px] leading-[123%] tracking-[0.01em] text-neutral-800 text-center mt-2 mb-12 lg:mb-16">
           Get your favorite food<br className="hidden sm:block" /> in an easy way

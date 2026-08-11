@@ -1,3 +1,7 @@
+"use client";
+
+import { FloatingShapes } from "@/src/components/FloatingShapes";
+
 const FEATURES = [
   { icon: "/takoyaki.svg",      title: "Fresh Food",   desc: "Fast delivery guaranteed. Get it fast" },
   { icon: "/fast delivery.svg", title: "Fast Delivery",desc: "Our restaurant partners have been carefully" },
@@ -7,8 +11,13 @@ const FEATURES = [
 
 export function WhyBest() {
   return (
-    <section className="bg-white py-12 lg:py-20">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "8%", right: "2%" },
+        { top: "55%", left: "1%" },
+        { top: "85%", right: "4%" },
+      ]} />
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
         <div className="flex justify-center">
           <img src="/Layer_9.svg" alt="Why choose us" className="w-full max-w-[520px] object-contain" />
         </div>

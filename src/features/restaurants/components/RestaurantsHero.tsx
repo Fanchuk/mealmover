@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 import type { RestaurantListItem } from "../types";
 
 function highlight(name: string, q: string) {
@@ -55,6 +56,12 @@ export function RestaurantsHero() {
 
   return (
     <section className="relative bg-white pt-12 lg:pt-20 pb-32 lg:pb-40 overflow-visible">
+      <FloatingShapes positions={[
+        { top: "15%", left: "3%" },
+        { top: "70%", left: "6%" },
+        { top: "20%", right: "4%" },
+        { top: "65%", right: "7%" },
+      ]} />
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center text-center">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase">
           Restaurants

@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
 import { Spinner } from "@/src/components/Spinner";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const CATEGORIES = [
   { id: "near",    label: "Near Me",     icon: "/🗺️.png" },
@@ -96,10 +97,13 @@ export function ExploreSection() {
     <section className="bg-white py-12 lg:py-20 overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center relative z-10">
         
-        <Image src="/Rectangle 234 (1).svg" alt="" width={12} height={12} className="absolute top-[30px] left-[15%] hidden lg:block" />
-        <Image src="/Rectangle 227 (1).svg" alt="" width={12} height={12} className="absolute top-[-10px] left-[25%] hidden lg:block" />
-        <Image src="/Rectangle 234 (1).svg" alt="" width={12} height={12} className="absolute top-[30px] right-[20%] hidden lg:block" />
-        <Image src="/Rectangle 227 (1).svg" alt="" width={12} height={12} className="absolute top-[-20px] right-[10%] hidden lg:block" />
+        <FloatingShapes positions={[
+          { top: "10%", left: "5%" },
+          { top: "80%", left: "10%" },
+          { top: "10%", right: "8%" },
+          { top: "75%", right: "5%" },
+          { top: "45%", left: "2%" },
+        ]} />
 
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">
           Explore Restaurant

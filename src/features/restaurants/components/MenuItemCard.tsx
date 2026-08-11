@@ -40,14 +40,14 @@ export function MenuItemCard({
     >
       <button 
         onClick={onOpenModal} 
-        className="overflow-hidden rounded-[20px] flex-shrink-0 cursor-pointer block text-left" 
+        className="overflow-hidden rounded-[24px] flex-shrink-0 cursor-pointer block text-left" 
         aria-label={`Customize ${name}`}
       >
         <img
           ref={imageRef}
           src={image}
           alt={name}
-          className="w-[120px] sm:w-[180px] h-[120px] sm:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-[130px] sm:w-[200px] h-[130px] sm:h-[200px] object-cover rounded-[24px] transition-transform duration-500 group-hover:scale-110"
         />
       </button>
       <div className="flex flex-col gap-1.5 sm:gap-2 min-w-0 flex-1">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { FAQS } from "../data/faqs";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const TABS = ["General", "Transaction", "Payments", "Returns", "Careers"];
 
@@ -14,8 +15,13 @@ export function AboutFaq() {
   const filtered = FAQS.filter((f) => f.cat === activeTab);
 
   return (
-    <section className="bg-white py-12 lg:py-20">
-      <div className="max-w-[1080px] mx-auto px-4 sm:px-6 flex flex-col items-center">
+    <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "10%", left: "1%" },
+        { top: "50%", right: "2%" },
+        { top: "85%", left: "3%" },
+      ]} />
+      <div className="max-w-[1080px] mx-auto px-4 sm:px-6 flex flex-col items-center relative z-10">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">FAQ&apos;s</span>
         <h2 className="font-heading font-bold text-[32px] sm:text-[48px] lg:text-[55px] leading-[110%] tracking-[0.01em] text-neutral-800 text-center mt-2 mb-10 lg:mb-12">
           How Can We Help You

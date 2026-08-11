@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import toast from "react-hot-toast";
 import type { BlogPost } from "../services/blogApi";
 import { subscribeNewsletter, type NewsletterState } from "../services/newsletterAction";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const CONTACTS = [
   { icon: "/WhatsApp.svg", alt: "WhatsApp", href: "#" },
@@ -27,10 +28,15 @@ export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[];
   const gallery = [11, 22, 33, 44, 55, 66];
 
   return (
-    <aside className="flex flex-col gap-8">
+    <aside className="flex flex-col gap-8 relative">
+      <FloatingShapes positions={[
+        { top: "5%", right: "0%" },
+        { top: "45%", right: "2%" },
+        { top: "80%", right: "1%" },
+      ]} />
       <div>
-        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Popular Posts</h3>
-        <div className="flex flex-col gap-4">
+        <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4 relative z-10">Popular Posts</h3>
+        <div className="flex flex-col gap-4 relative z-10">
           {popular.map((p) => (
             <Link key={p.id} href={`/blog/${p.id}`} className="flex gap-3 group">
               <img src={p.image} alt="" className="w-[70px] h-[70px] rounded-[14px] object-cover flex-shrink-0" />
@@ -43,7 +49,7 @@ export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[];
         </div>
       </div>
 
-      <div className="rounded-[20px] bg-[#EF5B5B] p-6 text-white">
+      <div className="rounded-[20px] bg-[#EF5B5B] p-6 text-white relative z-10">
         <h3 className="font-heading font-bold text-[20px]">Newsletter</h3>
         <p className="font-heading text-[14px] text-white/80 mt-1 mb-4">Get the latest recipes in your inbox.</p>
         <form action={formAction} className="flex flex-col gap-3">
@@ -54,7 +60,7 @@ export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[];
         </form>
       </div>
 
-      <div>
+      <div className="relative z-10">
         <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Popular Tags</h3>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
@@ -69,7 +75,7 @@ export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[];
         </div>
       </div>
 
-      <div>
+      <div className="relative z-10">
         <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Follow us</h3>
         <div className="flex gap-3">
           {CONTACTS.map((c) => (
@@ -80,7 +86,7 @@ export function BlogSidebar({ popular, tags, activeTag }: { popular: BlogPost[];
         </div>
       </div>
 
-      <div>
+      <div className="relative z-10">
         <h3 className="font-heading font-bold text-[20px] text-neutral-800 mb-4">Gallery</h3>
         <div className="grid grid-cols-3 gap-2">
           {gallery.map((seed) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { SIZE_OPTIONS, ADDON_OPTIONS, DEFAULT_SIZE_ID } from "../data/modifiers";
@@ -31,6 +31,15 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open]);
 
   if (!dish) return null;
 
@@ -80,7 +89,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 pt-28 sm:p-6 sm:pt-32"
+          className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 pt-28 sm:p-6 sm:pt-32 overscroll-none"
         >
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -101,7 +110,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5">
               <h3 className="font-heading font-bold text-[22px] sm:text-[24px] text-neutral-800 leading-tight">{dish.name}</h3>
               <p className="font-heading text-[14px] sm:text-[15px] text-neutral-500 mt-1.5">{dish.desc}</p>
               <p className="font-heading font-semibold text-[20px] sm:text-[22px] text-[#EF5B5B] mt-3">${dish.basePrice.toFixed(2)}</p>

@@ -1,10 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 export function AboutHero() {
   return (
     <section className="bg-white overflow-hidden relative">
+      <FloatingShapes positions={[
+        { top: "15%", right: "3%" },
+        { top: "65%", right: "5%" },
+        { top: "80%", left: "30%" },
+      ]} />
       <div className="absolute left-0 top-[20%] z-0 w-[80px] sm:w-[100px] lg:w-[120px]">
         <Image src="/015-spinach (1).png" alt="" width={120} height={120} className="object-contain drop-shadow-lg w-full h-auto" />
       </div>

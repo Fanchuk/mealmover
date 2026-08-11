@@ -242,6 +242,22 @@
         font-family: 'Inter', sans-serif;
         font-weight: 400;
     }
+
+    /* Приховуємо скролбар для Chrome, Safari та Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Приховуємо скролбар для IE, Edge та Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    /* Тимчасово приховуємо індикатор Next.js dev */
+    nextjs-portal {
+        display: none !important;
+    }
 }
 
 @media print {

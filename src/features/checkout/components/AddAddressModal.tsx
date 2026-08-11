@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { saveAddress } from "@/src/features/restaurants/services/addressActions";
 
 interface Address {
-  id: string;
+  id: string; 
   title: string;
   street: string;
   note: string | null;

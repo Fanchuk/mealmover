@@ -19,6 +19,28 @@ const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
+function UserAvatar({ session }: { session: ReturnType<typeof useSession>["data"] }) {
+  const [imgError, setImgError] = useState(false);
+  const initial = session?.user?.name?.[0]?.toUpperCase() ?? "U";
+
+  if (session?.user?.image && !imgError) {
+    return (
+      <img
+        src={session.user.image}
+        alt={session.user.name ?? "User"}
+        onError={() => setImgError(true)}
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="w-full h-full flex items-center justify-center bg-[#FFCF27] font-heading font-semibold text-neutral-800 text-[16px]">
+      {initial}
+    </div>
+  );
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -97,11 +119,7 @@ export function Navbar() {
           {isAuthed ? (
             <div ref={menuRef} className="relative">
               <button onClick={() => setUserMenu((v) => !v)} className="w-10 h-10 rounded-full overflow-hidden bg-[#FFCF27] flex-shrink-0 hover:ring-2 hover:ring-[#EF5B5B]/30 transition-all">
-                {session?.user?.image ? (
-                  <img src={session.user.image} alt="User" className="w-full h-full object-cover" />
-                ) : (
-                  <img src="/Frame 6.svg" alt="User" className="w-full h-full object-cover" />
-                )}
+                <UserAvatar session={session} />
               </button>
               <AnimatePresence>
                 {userMenu && (

@@ -1,10 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 export function ContactHero() {
   return (
     <section className="bg-white overflow-hidden relative">
+      <FloatingShapes positions={[
+        { top: "10%", right: "3%" },
+        { top: "55%", right: "5%" },
+        { top: "75%", left: "30%" },
+      ]} />
       <div className="absolute left-0 bottom-[-10%] z-0 w-[60px] sm:w-[80px] lg:w-[120px]">
         <Image src="/Ellipse.png" alt="" width={120} height={240} className="object-contain w-full h-auto" />
       </div>

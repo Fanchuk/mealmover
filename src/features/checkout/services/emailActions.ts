@@ -3,19 +3,24 @@
 import { Resend } from "resend";
 import { auth } from "@/src/lib/auth";
 
-
 export async function sendOrderEmail(orderNumber: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[Resend] RESEND_API_KEY is not set — skipping email send.");
+    return;
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
-  
+
   const session = await auth();
-  const email = session?.user?.email;
+  const userEmail = session?.user?.email;
   const name = session?.user?.name ?? "Customer";
-  if (!email) return;
+  
+  if (!userEmail) return;
 
   try {
-    await resend.emails.send({
-      from: "MealMover <orders@resend.dev>", 
-      to: email,
+    const { data, error } = await resend.emails.send({
+      from: "MealMover <onboarding@resend.dev>",
+      to: "fan.fotball.on@gmail.com", 
       subject: `Order #${orderNumber} confirmed 🎉`,
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
@@ -33,7 +38,14 @@ export async function sendOrderEmail(orderNumber: string) {
         </div>
       `,
     });
+
+    if (error) {
+      console.error("[Resend] API returned an error:", JSON.stringify(error, null, 2));
+      return;
+    }
+
+    console.log("[Resend] Email sent:", data?.id);
   } catch (err) {
-    console.error("[Resend] Failed to send email:", err);
+    console.error("[Resend] Unexpected error:", err instanceof Error ? err.message : err);
   }
 }

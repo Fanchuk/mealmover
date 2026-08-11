@@ -6,18 +6,19 @@ import { TrustedPartners } from "@/src/features/about/components/TrustedPartners
 import { CustomerSay } from "@/src/features/about/components/CustomerSay";
 import { AboutFaq } from "@/src/features/about/components/AboutFaq";
 import { OrderCta } from "@/src/features/about/components/OrderCta";
+import { ScrollReveal } from "@/src/components/ScrollReveal";
 
 export default function AboutPage() {
   return (
     <>
       <AboutHero />
-      <WhyBest />
-      <HowItWorks />
-      <OurTeam />
-      <TrustedPartners />
-      <CustomerSay />
-      <AboutFaq />
-      <OrderCta />
+      <ScrollReveal><WhyBest /></ScrollReveal>
+      <ScrollReveal><HowItWorks /></ScrollReveal>
+      <ScrollReveal><OurTeam /></ScrollReveal>
+      <ScrollReveal><TrustedPartners /></ScrollReveal>
+      <ScrollReveal><CustomerSay /></ScrollReveal>
+      <ScrollReveal><AboutFaq /></ScrollReveal>
+      <ScrollReveal><OrderCta /></ScrollReveal>
     </>
   );
 }

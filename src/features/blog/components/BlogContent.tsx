@@ -9,6 +9,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import type { BlogPost } from "../services/blogApi";
 import { BlogSidebar } from "./BlogSidebar";
 import { cn } from "@/src/lib/utils";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface Props {
   posts: BlogPost[];
@@ -66,7 +67,7 @@ export function BlogContent({ posts, popular, tags, activeQ, activeTag }: Props)
       key={i}
       onClick={() => { setPage(i); emblaApi?.scrollTo(i); }}
       className={cn(
-        "rounded-full font-heading font-medium text-[15px] transition-all duration-300",
+        "rounded-full font-heading font-medium text-[15px] transition-all duration-300 relative z-10",
         page === i ? "w-10 h-10 bg-[#EF5B5B] text-white" : "w-8 h-8 bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
       )}
     >
@@ -75,14 +76,19 @@ export function BlogContent({ posts, popular, tags, activeQ, activeTag }: Props)
   );
 
   return (
-    <section className="bg-white py-8 lg:py-12">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+    <section className="bg-white py-8 lg:py-12 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "3%", right: "2%" },
+        { top: "40%", left: "1%" },
+        { top: "75%", right: "3%" },
+      ]} />
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase">Blog</span>
         <h1 className="font-heading font-bold text-[32px] sm:text-[48px] text-neutral-800 mt-2 mb-8">Latest articles &amp; recipes</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 lg:gap-12 items-start">
           <div>
-            <div className="flex items-center gap-3 bg-neutral-100 rounded-[50px] px-5 h-[56px] mb-6">
+            <div className="flex items-center gap-3 bg-neutral-100 rounded-[50px] px-5 h-[56px] mb-6 relative z-10">
               <Search size={20} className="text-neutral-400" />
               <input
                 value={search}
@@ -93,20 +99,20 @@ export function BlogContent({ posts, popular, tags, activeQ, activeTag }: Props)
             </div>
 
             {activeTag && (
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mb-4 flex items-center gap-2 relative z-10">
                 <span className="font-heading text-[14px] text-neutral-500">Filtered by tag:</span>
                 <Link href="/blog" className="font-heading text-[14px] text-[#EF5B5B] font-medium">#{activeTag} ✕</Link>
               </div>
             )}
 
             {posts.length === 0 ? (
-              <div className="py-16 text-center">
+              <div className="py-16 text-center relative z-10">
                 <span className="text-5xl">🔍</span>
                 <p className="font-heading font-bold text-[20px] text-neutral-700 mt-4">No articles found</p>
               </div>
             ) : (
               <>
-                <div className="overflow-hidden" ref={emblaRef}>
+                <div className="overflow-hidden relative z-10" ref={emblaRef}>
                   <div className="flex">
                     {Array.from({ length: totalPages }).map((_, pageIdx) => (
                       <div key={pageIdx} className="flex-[0_0_100%] min-w-0">
@@ -118,7 +124,7 @@ export function BlogContent({ posts, popular, tags, activeQ, activeTag }: Props)
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: i * 0.06, duration: 0.4 }}
                             >
-                              <Link href={`/blog/${post.id}`} className="group block rounded-[24px] border border-neutral-200 overflow-hidden hover:border-[#EF5B5B] hover:shadow-[0_16px_40px_-16px_rgba(239,91,91,0.3)] transition-all h-full">
+                              <Link href={`/blog/${post.id}`} className="group block rounded-[24px] border border-neutral-200 overflow-hidden hover:border-[#EF5B5B] hover:shadow-[0_16px_40px_-16px_rgba(239,91,91,0.3)] transition-all h-full bg-white">
                                 <div className="relative h-[200px] overflow-hidden">
                                   <img
                                     src={post.image}
@@ -149,7 +155,7 @@ export function BlogContent({ posts, popular, tags, activeQ, activeTag }: Props)
                 </div>
 
                 {totalPages > 1 && (
-                  <div className="mt-10">
+                  <div className="mt-10 relative z-10">
                     <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden mb-6">
                       <motion.div
                         className="h-full bg-[#EF5B5B] rounded-full"

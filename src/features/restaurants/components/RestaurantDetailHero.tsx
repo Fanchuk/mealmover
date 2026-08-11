@@ -8,6 +8,7 @@ import { OpeningHours } from "./OpeningHours";
 import { LocationSelect } from "./LocationSelect";
 import { StatModal } from "./StatModal";
 import { getRestaurantStats, type Restaurant } from '../data/restaurantStats'
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface Location {
   id: string;
@@ -30,7 +31,12 @@ export function RestaurantDetailHero({
   const stats = getRestaurantStats(restaurant);
 
   return (
-    <section className="bg-white">
+    <section className="bg-white relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "10%", left: "2%" },
+        { top: "60%", right: "3%" },
+        { top: "80%", left: "5%" },
+      ]} />
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-8 lg:py-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 lg:mb-12">
           <nav className="flex items-center gap-2 font-heading text-[14px] sm:text-[16px] flex-wrap">
@@ -43,7 +49,7 @@ export function RestaurantDetailHero({
           <LocationSelect locations={locations} />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
+        <div className="flex flex-col md:flex-row gap-6 lg:gap-8 relative z-10">
           <img src={restaurant.image} alt={restaurant.name} className="w-full md:w-[235px] h-[220px] md:h-[235px] object-cover rounded-[24px] flex-shrink-0" />
           <div className="flex flex-col gap-4">
             <h1 className="font-heading font-medium text-[32px] sm:text-[42px] lg:text-[49px] leading-[124%] tracking-[0.01em] text-neutral-800">{restaurant.name}</h1>
@@ -70,7 +76,7 @@ export function RestaurantDetailHero({
           </div>
         </div>
 
-        <div className="mt-8 bg-neutral-100 rounded-[30px] px-4 sm:px-6 lg:px-12 py-6 lg:py-8 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-0 sm:flex sm:items-stretch">
+        <div className="mt-8 bg-neutral-100 rounded-[30px] px-4 sm:px-6 lg:px-12 py-6 lg:py-8 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-0 sm:flex sm:items-stretch relative z-10">
           {stats.map((s, i) => (
             <div key={s.key} className="contents sm:flex sm:flex-1 sm:items-center">
               <motion.button

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Star } from "lucide-react";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 const REVIEWS = [
   { name: "Angeline Liu", role: "Food Vlogger", avatar: "/Mask group (1).png", rating: 4.9, time: "2 months ago", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin convallis enim sed vehicula. Ut scelerisque gravida elit, at porttitor nulla. Vestibulum tellus mi, posuere vel turpis consequat, volutpat imperdiet ex." },
@@ -30,8 +31,13 @@ export function CustomerSay() {
   const progress = ((selected + 1) / REVIEWS.length) * 100;
 
   return (
-    <section className="bg-white py-12 lg:py-20">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "10%", left: "2%" },
+        { top: "70%", right: "3%" },
+        { top: "40%", left: "1%" },
+      ]} />
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
         <div className="flex justify-center lg:justify-start">
           <img src="/Group 1000002260.png" alt="Customer statistics" className="w-full max-w-[531px] object-contain" />
         </div>

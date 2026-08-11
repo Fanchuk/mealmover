@@ -11,6 +11,7 @@ import { RestaurantCard } from "./RestaurantCard";
 import { useRestaurantsAnimation } from "../hooks/useRestaurantsAnimation";
 import { PRICE_OPTIONS, SORT_OPTIONS } from '../data/filterOptions'
 import { useUpdateFilter } from "../hooks/useUpdateFilter";
+import { FloatingShapes } from "@/src/components/FloatingShapes";
 
 interface RestaurantsGridProps {
   initialItems: RestaurantListItem[];
@@ -79,7 +80,12 @@ export function RestaurantsGrid({ initialItems, totalCount }: RestaurantsGridPro
   const hasActiveFilters = spString.length > 0;
 
   return (
-    <section ref={sectionRef} id="restaurants-list" className="bg-white py-12 lg:py-20">
+    <section ref={sectionRef} id="restaurants-list" className="bg-white py-12 lg:py-20 relative overflow-hidden">
+      <FloatingShapes positions={[
+        { top: "5%", right: "2%" },
+        { top: "50%", left: "1%" },
+        { top: "90%", right: "4%" },
+      ]} />
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 flex flex-col items-center">
         <span className="font-heading font-bold text-[16px] sm:text-[20px] tracking-[0.1em] text-[#EF5B5B] uppercase text-center">
           Restaurants

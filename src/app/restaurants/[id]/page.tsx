@@ -12,6 +12,7 @@ import { canUserReview } from "@/src/features/restaurants/services/reviewActions
 import { RESTAURANT_MENU_MAP } from "@/src/features/restaurants/menu-map";
 import { mapReview } from "@/src/lib/mapReview";
 import { FloatingDots } from "@/src/components/ui/FloatingDots";
+import { ScrollReveal } from "@/src/components/ScrollReveal";
 
 export const dynamic = "force-dynamic";
 
@@ -65,30 +66,38 @@ export default async function RestaurantDetailPage({
       <FloatingDots />
       <div className="relative z-10">
         <DetailShell>
-          <RestaurantDetailHero restaurant={restaurant} locations={locations} />
-          <TodaysOffer 
-            offers={todaysOffers} 
-            restaurantId={restaurant.id} 
-            restaurantName={restaurant.name} 
-          />
-          <MenuSection 
-            mainCourse={mainCourse} 
-            drinksDesserts={drinksDesserts} 
-            restaurantId={restaurant.id} 
-            restaurantName={restaurant.name} 
-          />
-          <LocationMap
-            lat={(restaurant as { lat?: number | null }).lat ?? null}
-            lng={(restaurant as { lng?: number | null }).lng ?? null}
-            address={restaurant.street}
-            name={restaurant.name}
-          />
-          <CustomerReviews
-            restaurantId={restaurant.id}
-            canReview={canReview}
-            reviews={reviews.map(mapReview)}
-            stats={reviewStats}
-          />
+          <ScrollReveal><RestaurantDetailHero restaurant={restaurant} locations={locations} /></ScrollReveal>
+          <ScrollReveal>
+            <TodaysOffer
+              offers={todaysOffers}
+              restaurantId={restaurant.id}
+              restaurantName={restaurant.name}
+            />
+          </ScrollReveal>
+          <ScrollReveal>
+            <MenuSection
+              mainCourse={mainCourse}
+              drinksDesserts={drinksDesserts}
+              restaurantId={restaurant.id}
+              restaurantName={restaurant.name}
+            />
+          </ScrollReveal>
+          <ScrollReveal>
+            <LocationMap
+              lat={(restaurant as { lat?: number | null }).lat ?? null}
+              lng={(restaurant as { lng?: number | null }).lng ?? null}
+              address={restaurant.street}
+              name={restaurant.name}
+            />
+          </ScrollReveal>
+          <ScrollReveal>
+            <CustomerReviews
+              restaurantId={restaurant.id}
+              canReview={canReview}
+              reviews={reviews.map(mapReview)}
+              stats={reviewStats}
+            />
+          </ScrollReveal>
         </DetailShell>
       </div>
     </div>

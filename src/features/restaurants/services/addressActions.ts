@@ -18,6 +18,15 @@ export async function saveAddress(title: string, street: string): Promise<SaveAd
   const session = await auth();
   if (!session?.user?.id) return { ok: true, id: `guest-${Date.now()}` };
 
+  const userExists = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true },
+  });
+
+  if (!userExists) {
+    return { ok: false, error: "Your session is out of date — please sign in again." };
+  }
+
   const created = await prisma.address.create({
     data: {
       userId: session.user.id,
