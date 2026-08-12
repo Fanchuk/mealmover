@@ -7,7 +7,7 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 import { AddAddressModal } from "./AddAddressModal";
 import { cn } from "@/src/lib/utils";
 
-interface Address {
+export interface Address {
   id: string;
   title: string;
   street: string;
