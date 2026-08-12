@@ -16,7 +16,7 @@ Restaurant discovery, live menus, a persistent cart, authentication, and a compl
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/license-MIT-green)](#license)
 
-[Live Demo](#) · [Report Bug](../../issues) · [Request Feature](../../issues)
+[Live Demo](https://mealmover-5va8.vercel.app) · [Report Bug](../../issues) · [Request Feature](../../issues)
 
 </div>
 
@@ -236,7 +236,7 @@ The app deploys to **Vercel**:
 1. Push the repository to GitHub and import it into Vercel.
 2. Add every environment variable from the `.env` example above, setting `AUTH_URL` to the production domain.
 3. Add the production callback URLs to your Google and GitHub OAuth apps:
-   `https://<your-domain>/api/auth/callback/google` and `.../github`.
+   `https://mealmover-5va8.vercel.app/api/auth/callback/google` and `.../github`.
 4. `postinstall` runs `prisma generate` automatically during the build.
 5. Run the seed once against the production database.
 
