@@ -62,43 +62,7 @@ export async function getPostDetail(id: number): Promise<PostDetail | null> {
 }
 
 export async function getAdjacentPosts(id: number) {
-  async function exists(checkId: number): Promise<boolean> {
-    try {
-      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${checkId}`);
-      const data = await res.json();
-      return !!data.meals?.[0];
-    } catch {
-      return false;
-    }
-  }
-
-  const [prevExists, nextExists] = await Promise.all([
-    id > 52772 ? exists(id - 1) : Promise.resolve(false),
-    exists(id + 1),
-  ]);
-
-  // шукаємо наступний існуючий ID (до 5 кроків вперед)
-  let nextId: number | null = null;
-  if (nextExists) {
-    nextId = id + 1;
-  } else {
-    for (let i = 2; i <= 5; i++) {
-      if (await exists(id + i)) { nextId = id + i; break; }
-    }
-  }
-
-  let prevId: number | null = null;
-  if (id > 52772) {
-    if (prevExists) {
-      prevId = id - 1;
-    } else {
-      for (let i = 2; i <= 5; i++) {
-        if (id - i >= 52772 && await exists(id - i)) { prevId = id - i; break; }
-      }
-    }
-  }
-
-  return { prevId, nextId };
+  return { prevId: id > 52772 ? id - 1 : null, nextId: id + 1 };
 }
 
 export async function getRelatedPosts(tags: string[] = [], excludeId: number): Promise<PostDetail[]> {
