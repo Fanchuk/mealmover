@@ -32,8 +32,6 @@ The goal of the project is to demonstrate real production patterns — server-fi
 
 ## Screenshots
 
-> Save the images below into `public/README/` using the exact filenames shown, and they will render here automatically.
-
 | Homepage | Restaurants |
 |:---:|:---:|
 | ![Homepage](./public/README/home.png) | ![Restaurants](./public/README/restaurants.png) |
@@ -43,19 +41,6 @@ The goal of the project is to demonstrate real production patterns — server-fi
 | ![Checkout](./public/README/checkout.png) | ![Transactions](./public/README/transactions.png) |
 | **Blog** | **Mobile menu** |
 | ![Blog](./public/README/blog.png) | ![Mobile](./public/README/mobile-menu.png) |
-
-**Filenames to save into `public/README/`:**
-
-- `home.png` — homepage hero + food categories
-- `restaurants.png` — restaurants grid with filters
-- `restaurant-detail.png` — a single restaurant with its menu
-- `cart.png` — the cart drawer open with a few items
-- `checkout.png` — the checkout page
-- `transactions.png` — the transaction / order history page
-- `blog.png` — the blog list page
-- `mobile-menu.png` — the animated burger menu on a narrow viewport
-
-*(Tip: capture at ~1440px wide for desktop shots and ~390px for the mobile one, then compress with [Squoosh](https://squoosh.app) so the README stays light.)*
 
 ---
 
@@ -156,7 +141,7 @@ prisma/  ├─ schema.prisma  └─ seed.ts
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/<your-username>/mealmover.git
+git clone https://github.com/Fanchuk/mealmover.git
 cd mealmover
 npm install
 ```
@@ -260,6 +245,6 @@ Released under the [MIT License](./LICENSE).
 
 <div align="center">
 
-Built by **<your name>** — [Portfolio](#) · [LinkedIn](#) · [GitHub](#)
+Built by **Nazar Fanchuk** — [Portfolio](#) · [LinkedIn](https://linkedin.com/in/YOUR-PROFILE) · [GitHub](https://github.com/Fanchuk)
 
 </div>
