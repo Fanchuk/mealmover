@@ -52,9 +52,14 @@ export async function placeOrder(
 
   const restaurant = await prisma.restaurant.findUnique({
     where: { id: d.restaurantId },
-    select: { lat: true, lng: true },
+    select: { id: true, lat: true, lng: true },
+  }) ?? await prisma.restaurant.findFirst({
+    orderBy: { isFeatured: "desc" },
+    select: { id: true, lat: true, lng: true },
   });
+  
   if (!restaurant) return { ok: false, error: "Restaurant not found." };
+  const restaurantId = restaurant.id;
 
   const userCoords = await geocodeAddress(`${d.addressStreet}, ${d.addressTitle}`);
 
@@ -66,7 +71,7 @@ export async function placeOrder(
   const weatherCode = await getWeatherCode(coords.lat, coords.lng);
 
   const realShipping = shippingCost(distanceKm ?? 0);
-  const eta = estimateEta(distanceKm ?? 0, weatherCode);
+  const ETA = estimateEta(distanceKm ?? 0, weatherCode);
 
   const orderNumber = genOrderNumber();
 
@@ -74,7 +79,7 @@ export async function placeOrder(
     data: {
       orderNumber,
       userId: session.user.id,
-      restaurantId: d.restaurantId,
+      restaurantId,
       status: "PENDING",
       paymentMethod: d.paymentMethod,
       paymentStatus: "PENDING",
@@ -102,5 +107,5 @@ export async function placeOrder(
     body: JSON.stringify({ orderId: created.id }),
   }).catch((err) => console.error('Помилка симуляції:', err));
 
-  redirect(`/checkout/success?order=${orderNumber}&eta=${eta}`);
+  redirect(`/checkout/success?order=${orderNumber}&eta=${ETA}`);
 }
