@@ -38,14 +38,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!valid) return null;
 
-        return user;
+        return { id: user.id, name: user.name, email: user.email, role: user.role };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id ?? ''
+        token.id = user.id ?? '';
         token.role = (user as { role?: string }).role ?? "USER";
       }
       return token;

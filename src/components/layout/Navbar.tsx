@@ -46,6 +46,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const { data: session, status } = useSession();
+  console.log("SESSION:", status, session?.user?.id);
   const { setOpen: setCartOpen } = useCartStore();
   const items = useCartStore((s) => s.items);
   const count = items.reduce((sum, i) => sum + i.qty, 0);

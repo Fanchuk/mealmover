@@ -4,7 +4,6 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/src/lib/prisma";
 import { signIn } from "@/src/lib/auth";
-import { AuthError } from "next-auth";
 
 const RegisterSchema = z.object({
   name: z.string().min(2, "Name is too short").max(60),
@@ -36,17 +35,15 @@ export async function registerUser(_prev: AuthState, formData: FormData): Promis
 }
 
 export async function loginUser(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  try {
-    await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
-    });
-    return { ok: true };
-  } catch (err) {
-    if (err instanceof AuthError) {
-      return { ok: false, error: "Invalid email or password." };
-    }
-    throw err;
+  const res = await signIn("credentials", {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    redirect: false,
+  });
+
+  if (!res || res.error) {
+    return { ok: false, error: "Invalid email or password." };
   }
+
+  return { ok: true };
 }

@@ -13,6 +13,7 @@ import { PromoInputSection } from "./PromoInputSection";
 import { useSession } from "next-auth/react";
 import { CartRow } from "./CartRow";
 import { cn } from "@/src/lib/utils";
+import { FavoritesSection } from "./FavoritesSection";
 
 export function CartPanel() {
   const { open, setOpen, items, promo, setPromo } = useCartStore();
@@ -129,7 +130,7 @@ export function CartPanel() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 pb-4">
+            <div className="flex-1 overflow-y-auto px-6 pb-4 flex flex-col gap-4">
               <div className="border border-neutral-200 rounded-[26px] p-5 flex flex-col gap-4">
                 <h3 className="font-heading font-medium text-[20px] tracking-[0.02em] text-neutral-800">
                   {restaurantName}
@@ -153,6 +154,8 @@ export function CartPanel() {
 
                 <PromoInputSection subtotal={subtotal} promo={promo} setPromo={setPromo} />
               </div>
+
+              <FavoritesSection />
             </div>
 
             <div className="px-6 py-6 border-t border-neutral-100 shadow-[0_-6px_25px_0_rgba(0,0,0,0.06)] flex-shrink-0">

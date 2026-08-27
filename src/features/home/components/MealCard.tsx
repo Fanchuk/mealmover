@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { Heart, Clock, Home, Star } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { AddToCartStepper } from "@/src/features/restaurants/components/AddToCartStepper";
+import { type FavoriteItem } from "@/src/store/useFavoriteStore";
 
 export interface PopularItem {
   id: string;
@@ -23,7 +24,7 @@ export interface PopularItem {
 interface MealCardProps {
   meal: PopularItem;
   isFavorite: (id: string) => boolean;
-  toggleFavorite: (id: string) => void;
+  toggleFavorite: (item: FavoriteItem) => void;
   onOpenModal: () => void;
 }
 
@@ -34,19 +35,25 @@ export function MealCard({ meal, isFavorite, toggleFavorite, onOpenModal }: Meal
     <motion.div
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="bg-white rounded-[20px] shadow-[0_16px_40px_0_rgba(0,0,0,0.07)] overflow-hidden h-full flex flex-col"
+      onClick={onOpenModal}
+      className="relative bg-white rounded-[20px] shadow-[0_16px_40px_0_rgba(0,0,0,0.07)] overflow-hidden h-full flex flex-col cursor-pointer"
     >
-      <button
-        onClick={onOpenModal}
-        className="relative h-[280px] sm:h-[320px] flex-shrink-0 overflow-hidden block w-full text-left cursor-pointer"
-        aria-label={`Customize ${meal.name}`}
-      >
+      <div className="relative h-[280px] sm:h-[320px] flex-shrink-0 overflow-hidden">
         <img ref={imageRef} src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
-      </button>
+      </div>
       <button
-        onClick={() => toggleFavorite(meal.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite({
+            id: meal.id,
+            name: meal.name,
+            price: meal.price,
+            image: meal.image,
+            restaurantName: meal.restaurantName,
+          });
+        }}
         className={cn(
-          "group absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors",
+          "group absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-colors z-10",
           isFavorite(meal.id) ? "bg-[#EF5B5B]" : "bg-white hover:bg-[#EF5B5B]"
         )}
       >
@@ -85,15 +92,17 @@ export function MealCard({ meal, isFavorite, toggleFavorite, onOpenModal }: Meal
             <span className="font-heading font-light text-[14px] text-neutral-600">/ 5.0</span>
           </div>
         </div>
-        <AddToCartStepper
-          id={meal.id}
-          name={meal.name}
-          price={meal.price}
-          image={meal.image}
-          restaurantId={meal.restaurantId ?? "mealmover-kitchen"}
-          restaurantName={meal.restaurantName}
-          imageRef={imageRef}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <AddToCartStepper
+            id={meal.id}
+            name={meal.name}
+            price={meal.price}
+            image={meal.image}
+            restaurantId={meal.restaurantId ?? "mealmover-kitchen"}
+            restaurantName={meal.restaurantName}
+            imageRef={imageRef}
+          />
+        </div>
       </div>
     </motion.div>
   );

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Plus, Minus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { SIZE_OPTIONS, ADDON_OPTIONS, DEFAULT_SIZE_ID } from "../data/modifiers";
 import { useCartStore } from "../store";
 import { SizeCard } from "./SizeCard";
 import { AddonCard } from "./AddonCard";
+import { cn } from "@/src/lib/utils";
 
 interface DishData {
   id: string;
@@ -23,14 +25,20 @@ interface Props {
   dish: DishData | null;
   onClose: () => void;
   onBeforeAdd?: (restaurantId: string, add: () => void) => void;
+  size?: "default" | "compact";
 }
 
-export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
+export function DishModal({ open, dish, onClose, onBeforeAdd, size = "default" }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const [sizeId, setSizeId] = useState(DEFAULT_SIZE_ID);
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  const isCompact = size === "compact";
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -41,11 +49,11 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
     };
   }, [open]);
 
-  if (!dish) return null;
+  if (!dish || !mounted) return null;
 
-  const size = SIZE_OPTIONS.find((s) => s.id === sizeId)!;
+  const sizeData = SIZE_OPTIONS.find((s) => s.id === sizeId)!;
   const addons = ADDON_OPTIONS.filter((a) => addonIds.includes(a.id));
-  const unit = dish.basePrice + size.price + addons.reduce((s, a) => s + a.price, 0);
+  const unit = dish.basePrice + sizeData.price + addons.reduce((s, a) => s + a.price, 0);
   const total = unit * qty;
 
   function toggleAddon(id: string) {
@@ -69,7 +77,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
       basePrice: dish!.basePrice,
       qty,
       note: note.trim() || undefined,
-      size: { id: size.id, name: size.name, price: size.price },
+      size: { id: sizeData.id, name: sizeData.name, price: sizeData.price },
       addons: addons.map((a) => ({ id: a.id, name: a.name, price: a.price })),
     });
     reset();
@@ -81,7 +89,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
     else doAdd();
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -89,7 +97,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 pt-28 sm:p-6 sm:pt-32 overscroll-none"
+          className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4 overscroll-none"
         >
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -97,10 +105,16 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
             exit={{ opacity: 0, y: 40, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[520px] bg-white rounded-[28px] flex flex-col overflow-hidden shadow-2xl isolate"
-            style={{ maxHeight: "calc(100dvh - 160px)" }}
+            className={cn(
+              "w-full bg-white rounded-[28px] flex flex-col overflow-hidden shadow-2xl isolate",
+              isCompact ? "max-w-[400px]" : "max-w-[520px]"
+            )}
+            style={{ maxHeight: isCompact ? "calc(100dvh - 140px)" : "calc(100dvh - 80px)" }}
           >
-            <div className="relative w-full h-[180px] sm:h-[220px] flex-shrink-0 bg-neutral-100 rounded-t-[28px] overflow-hidden">
+            <div className={cn(
+              "relative w-full flex-shrink-0 bg-neutral-100 rounded-t-[28px] overflow-hidden",
+              isCompact ? "h-[120px]" : "h-[180px] sm:h-[220px]"
+            )}>
               <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
               <button
                 onClick={onClose}
@@ -174,6 +188,7 @@ export function DishModal({ open, dish, onClose, onBeforeAdd }: Props) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
