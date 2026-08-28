@@ -141,7 +141,7 @@ prisma/  ├─ schema.prisma  └─ seed.ts
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/Fanchuk/mealmover.git
+git clone https://github.com/Metenchuk/mealmover.git
 cd mealmover
 npm install
 ```
@@ -245,6 +245,6 @@ Released under the [MIT License](./LICENSE).
 
 <div align="center">
 
-Built by **Nazar Fanchuk** — [Portfolio](#) · [LinkedIn](https://linkedin.com/in/YOUR-PROFILE) · [GitHub](https://github.com/Fanchuk)
+Built by **Nazar Metenchuk** — [Portfolio](#) · [LinkedIn](https://linkedin.com/in/nazar-metenchuk) · [GitHub](https://github.com/Metenchuk)
 
 </div>
