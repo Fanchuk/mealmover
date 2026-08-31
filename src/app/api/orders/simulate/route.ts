@@ -1,5 +1,4 @@
 import { prisma } from "@/src/lib/prisma";
-import { pusherServer } from "@/src/lib/pusher";
 import type { OrderStatus } from "@prisma/client";
 
 const NEXT_STATUS: Record<string, OrderStatus | null> = {
@@ -36,8 +35,9 @@ export async function POST(req: Request) {
   });
 
   try {
+    const { pusherServer } = await import("@/src/lib/pusher");
     await pusherServer.trigger(`order-${orderId}`, "status-update", { status: next });
-  } catch (err) {
+  } catch {
   }
 
   if (NEXT_STATUS[next]) {
