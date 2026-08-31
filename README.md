@@ -15,6 +15,7 @@ Restaurant discovery, live menus, a persistent cart, authentication, and a compl
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql)](https://neon.tech)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/license-MIT-green)](#license)
+![CI](https://github.com/Metenchuk/mealmover/actions/workflows/ci.yml/badge.svg)
 
 [Live Demo](https://mealmover-5va8.vercel.app) · [Report Bug](../../issues) · [Request Feature](../../issues)
 
@@ -245,6 +246,6 @@ Released under the [MIT License](./LICENSE).
 
 <div align="center">
 
-Built by **Nazar Metenchuk** — [Portfolio](#) · [LinkedIn](https://linkedin.com/in/nazar-metenchuk) · [GitHub](https://github.com/Metenchuk)
+Built by **Nazar Metenchuk** — [GitHub](https://github.com/Metenchuk) · [LinkedIn](https://linkedin.com/in/nazar-metenchuk)
 
 </div>
