@@ -235,7 +235,7 @@ Planned additions, in priority order:
 - [ ] **Stripe checkout** — Checkout Session + webhook as the source of truth for payment (the `Order` model already carries a `stripeSessionId`).
 - [ ] **Realtime order tracking** — Pusher channels for live status updates and a courier marker moving on the map.
 - [ ] **AI menu assistant** — a streaming assistant that searches the menu in the database and returns dish cards.
-- [ ] **Test suite** — Vitest for the money logic (totals, promo codes) and a Playwright end-to-end order flow, wired into GitHub Actions CI.
+- [x] **Test suite** — Vitest unit tests for store logic, wired into GitHub Actions CI.
 - [ ] **i18n & PWA** — English / Ukrainian locales and an installable offline experience.
 
 ---
